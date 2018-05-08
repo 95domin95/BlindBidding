@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using BlindBidding.Data;
 using BlindBidding.Models;
@@ -15,6 +16,14 @@ using Microsoft.Extensions.Logging;
 
 namespace BlindBidding.Controllers
 {
+    public class AddAuctionFormData
+    {
+        public string Duration { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Category { get; set; }
+        public string Data { get; set; }
+    }
     public class AuctionController : Controller
     {
         private IHostingEnvironment _hostingEnv;
@@ -65,24 +74,46 @@ namespace BlindBidding.Controllers
         {
             var startDate = DateTime.Now;
 
-            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var endDate = startDate.AddDays(Convert.ToDouble(duration));
 
             var cat = _context.Categories.Where(c => c.Name.Equals(category)).FirstOrDefault();
 
-            var auction = _context.Auctions.Where(a => a.Owner.Equals(user))
-                .OrderByDescending(o => o.StartDate).FirstOrDefault();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
 
-            startDate = auction.StartDate;
+            var auction = new Auction()
+            {
+                StartDate = startDate,
+                EndDate = endDate,
+                Description = description,
+                Title = title,
+                Category = cat,
+                Owner = user
+            };
 
-            var endDate = startDate.AddDays(Convert.ToDouble(duration));
-
-            auction.EndDate = endDate;
-            auction.Description = description;
-            auction.Title = title;
-            auction.Category = cat;
-            auction.Owner = user;
+            _context.Add(auction);
 
             _context.SaveChanges();
+
+            //var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            //var cat = _context.Categories.Where(c => c.Name.Equals(category)).FirstOrDefault();
+
+            //var auction = _context.Auctions.Where(a => a.Owner.Equals(user))
+            //    .OrderByDescending(o => o.StartDate).FirstOrDefault();
+
+            //var id = auction.AuctionId;
+
+            //startDate = auction.StartDate;
+
+            //var endDate = startDate.AddDays(Convert.ToDouble(duration));
+
+            //auction.EndDate = endDate;
+            //auction.Description = description;
+            //auction.Title = title;
+            //auction.Category = cat;
+            //auction.Owner = user;
+
+            //_context.SaveChanges();
 
             ViewData["AuctionAdded"] = "DodanoAukcję";
 
@@ -93,37 +124,56 @@ namespace BlindBidding.Controllers
         }
 
         [HttpPost]
-        public IActionResult UploadFiles()
+        public async Task<IActionResult> UploadFiles([FromBody]AddAuctionFormData formData)
         {
+            var category = _context.Categories.Where(c => c.Name.Equals(formData.Category)).FirstOrDefault();
+
             var startDate = DateTime.Now;
 
-            long size = 0;
-            var files = Request.Form.Files;
+            var endDate = startDate.AddDays(Convert.ToDouble(formData.Duration));
 
-            string path = String.Empty;
+            var user = await _userManager.GetUserAsync(HttpContext.User);
 
-            foreach (var file in files)
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/auctionThumbnails/");
+
+            var fileName = user + startDate.ToString().Replace("/", "-").Replace(" ", "-").Replace(":", "") + "_thumbnail.jpeg";
+
+            string fileNameWitPath = "wwwroot/images/auctionThumbnails/" + fileName;
+            using (FileStream fs = new FileStream(fileNameWitPath, FileMode.Create))
             {
-                path = _userManager.GetUserId(HttpContext.User) + startDate.ToString().Replace("/", "-").Replace(" ", "-").Replace(":", "") + file.FileName;
-                string filename = _hostingEnv.WebRootPath + $@"\images\auctionThumbnails\{path}";
-                size += file.Length;
-                using (FileStream fs = System.IO.File.Create(filename))
+                using (BinaryWriter bw = new BinaryWriter(fs))
                 {
-                    file.CopyTo(fs);
-                    fs.Flush();
+                    try
+                    {
+                        string result = Regex.Replace(formData.Data, "^data:image\\/[a-zA-Z]+;base64,", String.Empty);
+                        byte[] data = Convert.FromBase64String(result);
+                        bw.Write(data);
+                        bw.Close();
+                    }
+                    catch(Exception ex)
+                    {
+                        string tmp = ex.Message;
+                    }
+
                 }
             }
-            string message = $"{files.Count} file(s) / {size} bytes uploaded successfully!";
 
             var auction = new Auction()
             {
                 StartDate = startDate,
-                ThumbnailPath = path
+                EndDate = endDate,
+                Description = formData.Description,
+                Title = formData.Title,
+                Category = category,
+                Owner = user,
+                ThumbnailPath = fileName
             };
 
             _context.Add(auction);
 
             _context.SaveChanges();
+
+            string message = $"Files upload succesfully";
 
             return Json(message);
         }
