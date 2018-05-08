@@ -5,7 +5,7 @@
 @model BlindBidding.Models.HomeViewModels.ItemsListViewModel
 
 <div class="row">
-    <div class="col-sm-3 col-xs-12">
+    <div class="col-sm-3 col-xs-12" style="padding-top: 15px;">
         <form asp-controller="Home" asp-action="ItemsList" method="get">
             <label>Wyszukiwana fraza:</label>
             <input type="text" class="form-control" name="SearchString" placeholder="Wyszukaj...">
@@ -51,9 +51,10 @@
     <div class="col-sm-9 col-xs-12">
         <h3>@ViewData["Title"]</h3>
     </div>
+    <div class="col-sm-9 col-xs-12">
     @foreach(var i in Model.Auctions)
     {
-        <div class="col-sm-9 col-xs-12">
+        <div class="auction-in-list">
             <img class="items-list-auction-image" />
             <div class="items-list-auction-description">
                 <h4>@i.Title</h4>
@@ -62,6 +63,7 @@
             </div>
         </div>
     }
+    </div>
     <div class="col-sm-12 col-xs-12">
         <ul class="pagination">
             
