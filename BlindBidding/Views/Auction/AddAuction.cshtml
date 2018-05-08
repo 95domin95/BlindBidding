@@ -1,0 +1,67 @@
+﻿@model BlindBidding.Models.AuctionViewModels.AddAuctionViewModel
+
+@{
+    ViewData["Title"] = "Dodaj aukcję";
+}
+
+<script src="~/js/AuctionThumbnailHandler.js"></script>
+
+<div class="row">
+    <div class="col-xs-12">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+    <form asp-controller="Auction" asp-action="AddAuction" method="post" id="add-auction-form">
+        <div class="col-sm-6 col-xs-12">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Title"></label>
+                <input asp-for="Title" name="title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <input asp-for="Description" name="description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Duration"></label>
+                <input asp-for="Duration" name="duration" class="form-control" />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category"></label>
+                <select asp-for="Category" class="form-control" name="category">
+                    @foreach (var i in Model.CategoryList)
+                    {
+                        @if (i.SubcategoryOf == null)
+                        {
+                            <optgroup label="@i.Name">
+                                @foreach (var j in Model.CategoryList)
+                                {
+                                    @if (j.SubcategoryOf == i)
+                                    {
+                                        <option value="@j.Name">@j.Name</option>
+                                    }
+                                }
+                            </optgroup>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+
+        </div>
+        <div class="col-sm-6 col-xs-12">
+            <div id="fileBasket" class="filebasket">
+                Przeciągnij pliki tutaj.
+            </div>
+        </div>
+            <div class="col-xs-12" style="text-align: center">
+                <button id="add-auction-btn" class="btn btn-primary">Dodaj aukcję</button>
+            </div>
+    </form>    
+</div>
+
+@*@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}*@

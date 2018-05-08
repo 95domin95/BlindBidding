@@ -1,0 +1,70 @@
+﻿@{ 
+    ViewData["Title"] = "Lista Aukcji:";
+}
+
+@model BlindBidding.Models.HomeViewModels.ItemsListViewModel
+
+<div class="row">
+    <div class="col-sm-3 col-xs-12">
+        <form asp-controller="Home" asp-action="ItemsList" method="get">
+            <label>Wyszukiwana fraza:</label>
+            <input type="text" class="form-control" name="SearchString" placeholder="Wyszukaj...">
+            <br>
+            <label>Kategoria:</label>
+            <select name="Category" class="form-control">
+            @foreach (var i in Model.Categories)
+            {
+                @if (i.SubcategoryOf == null)           
+                {
+                    <optgroup label="@i.Name">
+                    @foreach (var j in Model.Categories)
+                        {
+                        @if (j.SubcategoryOf == i)
+                        {
+                            <option value="@j.Name">@j.Name</option>
+                        }
+                    }
+                    </optgroup>
+                }
+            }
+            </select>
+            <br>
+            <label>Elementów na stronie:</label>
+            <select name="elementsOnPage" id="elementsOnPage" class="form-control">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <br>
+            <label>Porządek sortowania:</label>
+            <select name="sortingOrder" class="form-control">
+                <option value="asc">Rosnąco</option>
+                <option value="desc">Malejąco</option>
+            </select>
+            <br>
+            <button class="btn btn-primary">Filtruj</button>
+            <br>
+        </form>
+    </div>
+    <div class="col-sm-9 col-xs-12">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+    @foreach(var i in Model.Auctions)
+    {
+        <div class="col-sm-9 col-xs-12">
+            <img class="items-list-auction-image" />
+            <div class="items-list-auction-description">
+                <h4>@i.Title</h4>
+                <img src="~/images/auctionThumbnails/@i.ThumbnailPath" height="100" width="100"/>
+                @i.Description
+            </div>
+        </div>
+    }
+    <div class="col-sm-12 col-xs-12">
+        <ul class="pagination">
+            
+        </ul>
+    </div>
+</div>

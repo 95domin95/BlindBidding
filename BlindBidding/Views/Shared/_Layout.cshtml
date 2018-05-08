@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -36,6 +36,7 @@
                 <ul class="nav navbar-nav"></ul>
 
                 <ul class="nav navbar-nav navbar-right">
+                    <li><a asp-controller="Home" asp-action="ItemsList">Przeglądaj</a></li>
                     @await Html.PartialAsync("_LoginPartial")
                 </ul>
             </div><!-- /.navbar-collapse -->

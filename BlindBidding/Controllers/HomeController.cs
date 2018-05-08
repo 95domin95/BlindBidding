@@ -5,27 +5,52 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlindBidding.Models;
+using BlindBidding.Data;
+using BlindBidding.Models.HomeViewModels;
 
 namespace BlindBidding.Controllers
 {
     public class HomeController : Controller
     {
+        public ApplicationDbContext _context;
+        public HomeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult About()
+        public IActionResult ItemsList()
         {
-            ViewData["Message"] = "Your application description page.";
+            var itemsList = _context.Auctions.OrderBy(a => a.EndDate).Take(100).ToList();
 
-            return View();
+            var categories = _context.Categories.ToList();
+
+            return View(new ItemsListViewModel()
+            {
+                Auctions = itemsList,
+                Categories = categories
+            });
         }
 
-        public IActionResult Contact()
+        [HttpGet]
+        public IActionResult ItemsList(string SearchString, string Category, string elementsOnPage, string sortingOrder)
         {
-            ViewData["Message"] = "Your contact page.";
+            var itemsList = _context.Auctions.Where(a => a.Description.Contains(SearchString)
+            || a.Title.Contains(SearchString)||0==0/* && a.Category.Equals(Category)*/);
 
+            var categories = _context.Categories.ToList();
+
+            return View(new ItemsListViewModel() {
+                Auctions = itemsList,
+                Categories = categories
+            });
+        }
+
+        public IActionResult Item()
+        {
             return View();
         }
 

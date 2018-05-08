@@ -13,6 +13,9 @@ using Microsoft.Extensions.Options;
 using BlindBidding.Models;
 using BlindBidding.Models.ManageViewModels;
 using BlindBidding.Services;
+using BlindBidding.Data;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace BlindBidding.Controllers
 {
@@ -20,6 +23,7 @@ namespace BlindBidding.Controllers
     [Route("[controller]/[action]")]
     public class ManageController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
@@ -30,12 +34,14 @@ namespace BlindBidding.Controllers
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
 
         public ManageController(
+          ApplicationDbContext context,
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
           UrlEncoder urlEncoder)
         {
+            _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
@@ -45,6 +51,8 @@ namespace BlindBidding.Controllers
 
         [TempData]
         public string StatusMessage { get; set; }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Index()

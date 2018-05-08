@@ -13,6 +13,10 @@ namespace BlindBidding.Models
         public string Title { get; set; }
         [StringLength(5000)]
         public string Description { get; set; }
+        [Required]
+        public int AllUsrAuctionsCount { get; set; }
+        public string ThumbnailPath { get; set; }
+        public Category Category { get; set; }
         public Bid AcceptedBid { get; set; }
         public ApplicationUser Owner { get; set; }
         public DateTime StartDate { get; set; }

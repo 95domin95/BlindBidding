@@ -11,9 +11,10 @@ using System;
 namespace BlindBidding.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180504133003_Migration2")]
+    partial class Migration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,8 +79,6 @@ namespace BlindBidding.Data.Migrations
 
                     b.Property<int?>("AcceptedBidBidId");
 
-                    b.Property<int>("AllUsrAuctionsCount");
-
                     b.Property<int?>("CategoryId");
 
                     b.Property<string>("Description")
@@ -90,8 +89,6 @@ namespace BlindBidding.Data.Migrations
                     b.Property<string>("OwnerId");
 
                     b.Property<DateTime>("StartDate");
-
-                    b.Property<string>("ThumbnailPath");
 
                     b.Property<string>("Title")
                         .HasMaxLength(70);
