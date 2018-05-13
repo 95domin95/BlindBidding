@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,11 +18,20 @@ namespace BlindBidding.Models
         [Required]
         public int AllUsrAuctionsCount { get; set; }
         public string ThumbnailPath { get; set; }
+
+        public int CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
         public Category Category { get; set; }
-        public Bid AcceptedBid { get; set; }
+
+        public string OwnerId { get; set; }
+        [ForeignKey("OwnerId")]
         public ApplicationUser Owner { get; set; }
+
+        public int? BidId { get; set; }
+        [ForeignKey("BidId")]
+        public virtual Bid Bid { get; set; }
+
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-
     }
 }

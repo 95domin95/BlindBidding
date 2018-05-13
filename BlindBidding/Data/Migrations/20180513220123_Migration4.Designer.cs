@@ -11,9 +11,10 @@ using System;
 namespace BlindBidding.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180513220123_Migration4")]
+    partial class Migration4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,8 +79,6 @@ namespace BlindBidding.Data.Migrations
 
                     b.Property<int>("AllUsrAuctionsCount");
 
-                    b.Property<int?>("BidId");
-
                     b.Property<int>("CategoryId");
 
                     b.Property<string>("Description")
@@ -97,8 +96,6 @@ namespace BlindBidding.Data.Migrations
                         .HasMaxLength(70);
 
                     b.HasKey("AuctionId");
-
-                    b.HasIndex("BidId");
 
                     b.HasIndex("CategoryId");
 
@@ -253,10 +250,6 @@ namespace BlindBidding.Data.Migrations
 
             modelBuilder.Entity("BlindBidding.Models.Auction", b =>
                 {
-                    b.HasOne("BlindBidding.Models.Bid", "Bid")
-                        .WithMany()
-                        .HasForeignKey("BidId");
-
                     b.HasOne("BlindBidding.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
@@ -270,7 +263,7 @@ namespace BlindBidding.Data.Migrations
             modelBuilder.Entity("BlindBidding.Models.Bid", b =>
                 {
                     b.HasOne("BlindBidding.Models.Auction", "Auction")
-                        .WithMany()
+                        .WithMany("Bids")
                         .HasForeignKey("AuctionId")
                         .OnDelete(DeleteBehavior.Cascade);
 

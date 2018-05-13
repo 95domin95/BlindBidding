@@ -75,7 +75,7 @@ window.addEventListener("load", function () {
 
             $.ajax({
                 type: 'POST',
-                url: '/Auction/UploadFiles',
+                url: '/Auction/AddAuction',
                 dataType: 'JSON',
                 contentType: 'application/json; charset=utf-8',
                 //contentType: false,

@@ -94,27 +94,6 @@ namespace BlindBidding.Controllers
 
             _context.SaveChanges();
 
-            //var user = await _userManager.GetUserAsync(HttpContext.User);
-
-            //var cat = _context.Categories.Where(c => c.Name.Equals(category)).FirstOrDefault();
-
-            //var auction = _context.Auctions.Where(a => a.Owner.Equals(user))
-            //    .OrderByDescending(o => o.StartDate).FirstOrDefault();
-
-            //var id = auction.AuctionId;
-
-            //startDate = auction.StartDate;
-
-            //var endDate = startDate.AddDays(Convert.ToDouble(duration));
-
-            //auction.EndDate = endDate;
-            //auction.Description = description;
-            //auction.Title = title;
-            //auction.Category = cat;
-            //auction.Owner = user;
-
-            //_context.SaveChanges();
-
             ViewData["AuctionAdded"] = "DodanoAukcję";
 
             return View(new AddAuctionViewModel()
@@ -124,7 +103,7 @@ namespace BlindBidding.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadFiles([FromBody]AddAuctionFormData formData)
+        public async Task<IActionResult> AddAuction([FromBody]AddAuctionFormData formData)
         {
             var category = _context.Categories.Where(c => c.Name.Equals(formData.Category)).FirstOrDefault();
 
