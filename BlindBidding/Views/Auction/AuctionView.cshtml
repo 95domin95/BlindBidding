@@ -1,0 +1,23 @@
+﻿@model BlindBidding.Models.AuctionViewModels.AuctionViewModel
+
+@{ 
+    ViewData["Title"] = Model.Auction.Title;
+}
+
+<div class="row">
+    <div class="col-sm-6 col-xs-12">
+        <img src="~/images/auctionThumbnails/@Model.Auction.ThumbnailPath" />
+    </div>
+    <div class="col-sm-6 col-xs-12">
+        <h3>@ViewData["Title"]</h3>
+        <div>
+            @Model.Auction.Description
+        </div>
+        <div style="margin-bottom: 10px; margin-top: 10px;">
+            Do końca aukcji pozostało <strong>@Model.Remains</strong> dni.
+        </div>
+        <div style="text-align: center">
+            <button class="btn btn-primary">Licytuj</button>
+        </div>
+    </div>
+</div>

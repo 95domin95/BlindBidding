@@ -9,6 +9,7 @@ using BlindBidding.Data;
 using BlindBidding.Models;
 using BlindBidding.Models.AuctionViewModels;
 using BlindBidding.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -69,40 +70,41 @@ namespace BlindBidding.Controllers
 
 
 
+        //[HttpPost]
+        //public async Task<IActionResult> AddAuction(string title = "", string description = "", string duration = "7", string category = "")
+        //{
+        //    var startDate = DateTime.Now;
+
+        //    var endDate = startDate.AddDays(Convert.ToDouble(duration));
+
+        //    var cat = _context.Categories.Where(c => c.Name.Equals(category)).FirstOrDefault();
+
+        //    var user = await _userManager.GetUserAsync(HttpContext.User);
+
+        //    var auction = new Auction()
+        //    {
+        //        StartDate = startDate,
+        //        EndDate = endDate,
+        //        Description = description,
+        //        Title = title,
+        //        Category = cat,
+        //        Owner = user
+        //    };
+
+        //    _context.Add(auction);
+
+        //    _context.SaveChanges();
+
+        //    ViewData["AuctionAdded"] = "DodanoAukcję";
+
+        //    return View(new AddAuctionViewModel()
+        //    {
+        //        CategoryList = _context.Categories.ToList()
+        //    });
+        //}
+
         [HttpPost]
-        public async Task<IActionResult> AddAuction(string title = "", string description = "", string duration = "7", string category = "")
-        {
-            var startDate = DateTime.Now;
-
-            var endDate = startDate.AddDays(Convert.ToDouble(duration));
-
-            var cat = _context.Categories.Where(c => c.Name.Equals(category)).FirstOrDefault();
-
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-
-            var auction = new Auction()
-            {
-                StartDate = startDate,
-                EndDate = endDate,
-                Description = description,
-                Title = title,
-                Category = cat,
-                Owner = user
-            };
-
-            _context.Add(auction);
-
-            _context.SaveChanges();
-
-            ViewData["AuctionAdded"] = "DodanoAukcję";
-
-            return View(new AddAuctionViewModel()
-            {
-                CategoryList = _context.Categories.ToList()
-            });
-        }
-
-        [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddAuction([FromBody]AddAuctionFormData formData)
         {
             var category = _context.Categories.Where(c => c.Name.Equals(formData.Category)).FirstOrDefault();
@@ -115,7 +117,7 @@ namespace BlindBidding.Controllers
 
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/auctionThumbnails/");
 
-            var fileName = user + startDate.ToString().Replace("/", "-").Replace(" ", "-").Replace(":", "") + "_thumbnail.jpeg";
+            var fileName = user.UserName + startDate.ToString().Replace("/", "-").Replace(" ", "-").Replace(":", "") + "_thumbnail.jpeg";
 
             string fileNameWitPath = "wwwroot/images/auctionThumbnails/" + fileName;
             using (FileStream fs = new FileStream(fileNameWitPath, FileMode.Create))
@@ -157,6 +159,19 @@ namespace BlindBidding.Controllers
             return Json(message);
         }
 
+        [HttpGet]
+        public IActionResult AuctionView(int id)
+        {
+            var auction = _context.Auctions.Where(a => a.AuctionId
+            .Equals(id)).FirstOrDefault();
+
+            TimeSpan remains = auction.EndDate - auction.StartDate;
+
+            return View(new AuctionViewModel() {
+                Remains = (int)remains.TotalDays,
+                Auction = auction
+            });
+        }
         public IActionResult Index()
         {
             //List<string> names = new List<string>();
