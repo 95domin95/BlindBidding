@@ -20,24 +20,6 @@ namespace BlindBidding.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
-        {
-            var categories = from Categories in _context.Categories select Categories;
-
-            var auctions = from Auctions in _context.Auctions select Auctions;
-
-            return View(new IndexViewModel()
-            {
-                OnPage = 1,
-                SortOrder = "Descending",
-                SortingExpression = "Data zakończenia",
-                Filter = "",
-                Category = "Samochody osobowe",
-                Categories = categories,
-                Auctions = auctions
-            });
-        }
-
         public IActionResult HomePage()
         {
             var newAuctions = _context.Auctions.OrderByDescending(a => a.StartDate);
@@ -50,16 +32,46 @@ namespace BlindBidding.Controllers
             });
         }
 
-        [HttpGet]
         public IActionResult Index(string filter="", int page=1, int onPage=10, 
-            string sortingOrder="Rosnąco", string sortingExpression="Data zakończenia", string category="Samochody osobowe")
+            string sortingOrder="Rosnąco", string sortingExpression="Data zakończenia", string category="Samochody osobowe", string message="")
         {
+
             var categories = from Categories in _context.Categories select Categories;
 
-            var auctions = _context.Auctions.Where(a => a.Title.Contains(filter)
-            && a.Category.Name.Equals(category));
+            var auctions = _context.Auctions.Where(a => a.Category.Name.Equals(category));
 
-            switch(sortingOrder)
+            auctions = auctions.Where(a => a.EndDate < DateTime.Now);
+
+            foreach(var i in auctions)
+            {
+                i.IsEnded = true;              
+            }
+
+            _context.SaveChanges();
+
+            auctions = _context.Auctions.Where(a => a.Category.Name.Equals(category)&&a.IsEnded.Equals(false));
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                auctions = auctions.Where(a => a.Title.Contains(filter));
+            }
+
+            var numberOfElements = auctions.Count();
+
+            var numberOfPages = (int)(auctions.Count() / onPage);
+
+            var elToTake = onPage;
+
+            if ((auctions.Count() % onPage) != 0) numberOfPages++;
+
+            if (page < 1) page = 1;
+            if (page > numberOfPages) page = numberOfPages;
+
+            if (page.Equals(numberOfPages)) elToTake = auctions.Count() - ((numberOfPages - 1) * onPage);
+
+            if(numberOfElements > 0)auctions = auctions.Skip((page-1)*onPage).Take(elToTake);
+
+            switch (sortingOrder)
             {
                 case "Rosnąco":
                     auctions = auctions.OrderBy(a => a.EndDate);
@@ -71,6 +83,8 @@ namespace BlindBidding.Controllers
                     break;
             }
 
+            if (message.Equals("Wylogowanie powiodło się.")) ViewData["Logout"] = "Wylogowanie powiodło się.";
+
             return View(new IndexViewModel()
             {
                 OnPage = onPage,
@@ -79,49 +93,12 @@ namespace BlindBidding.Controllers
                 Filter = filter,
                 Category = category,
                 Categories = categories,
-                Auctions = auctions
+                Auctions = auctions,
+                Page = page,
+                NumberOfElements = numberOfElements,
+                NumberOfPages = numberOfPages
             });
         }
-
-        //public async Task<IActionResult> Index(string filter="", int page=1, string sortExpression = "", 
-        //    string category="", int elementsOnPage=10)
-        //{
-        //    var auction = _context.Auctions.Where(a => a.Category.Equals(category));
-
-        //    if (category.Equals("")) auction = from Auction in _context.Auctions select Auction;
-
-        //    if (auction.Count().Equals(0)) return Content("Brak zawartości do wyświetlenia.");
-
-        //    if (!string.IsNullOrWhiteSpace(filter))
-        //    {
-        //        auction = auction.Where(a => a.Description.Contains(filter)||a.Title.Contains(filter));
-        //    }
-
-        //    var categories = _context.Categories.ToList();
-
-        //    //var tmp = new List<IndexViewModel>();
-
-        //    //tmp.Add(new IndexViewModel()
-        //    //{
-        //    //    Auctions = auction,
-        //    //    Categories = categories
-        //    //});
-
-        //    //IQueryable<IndexViewModel> viewModel = tmp.AsQueryable();
-
-        //    var model = await PagingList.CreateAsync(auction, elementsOnPage, page, sortExpression, "");
-
-        //    model.RouteValue = new RouteValueDictionary {
-        //        { "filter", filter},
-        //        { "category", category},
-        //        { "elementsOnPage", elementsOnPage}
-        //    };
-
-        //    return View(new IndexViewModel() {
-        //        Categories = categories,
-        //        Auctions = model
-        //    });
-        //}
 
         public IActionResult Item()
         {

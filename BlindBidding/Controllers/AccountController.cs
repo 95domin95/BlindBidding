@@ -248,7 +248,10 @@ namespace BlindBidding.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+
+            var message = "Wylogowanie powiodło się.";
+
+            return RedirectToAction(nameof(HomeController.Index), "Home", new { message });
         }
 
         [HttpPost]

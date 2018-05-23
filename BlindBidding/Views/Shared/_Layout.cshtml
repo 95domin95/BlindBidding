@@ -18,7 +18,7 @@
 </head>
 <body>
 
-    <nav class="navbar navbar-default navbar-fixed-top">
+    <nav class="navbar navbar-default navbar-fixed-top" style="background-color: white">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -28,7 +28,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="@Url.Action("HomePage","Home")">Aukcje w Ciemno</a>
+                <a class="navbar-brand" style="font-size: xx-large" href="@Url.Action("HomePage","Home")"><strong>Aukcje w Ciemno</strong></a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -43,9 +43,12 @@
         </div><!-- /.container-fluid -->
     </nav>
     <div class="container body-content">
+        <button onclick="topFunction()" id="myBtn" title="Go to top">
+            <span class="	glyphicon glyphicon-chevron-up"></span>
+        </button>
         @RenderBody()
         <hr />
-        <footer>
+        <footer style="text-align: center">
             <p>&copy; 2018 - BlindBidding</p>
         </footer>
     </div>
@@ -53,6 +56,7 @@
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/jquery.scrollTo.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">

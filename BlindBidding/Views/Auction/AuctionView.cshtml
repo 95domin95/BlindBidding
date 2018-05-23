@@ -5,8 +5,28 @@
 }
 
 <div class="row">
+    @if (Model.IsSold)
+    {
+        <div class="alert alert-success" role="alert">
+            Aukcja wylicytowana pomyślnie przez użytkownika @Model.Winner.UserName
+            za kwotę o wartości @Model.WinningBid.BidPrice@**@zł.
+        </div>
+
+    }
+    @if (ViewData["BidAdded"] != null)
+    {
+        @if (!ViewData["BidAdded"].Equals(""))
+        {
+            <div class="alert alert-success" role="alert">
+                @ViewData["BidAdded"]
+            </div>
+
+        }
+
+    }
+
     <div class="col-sm-6 col-xs-12">
-        <img src="~/images/auctionThumbnails/@Model.Auction.ThumbnailPath" />
+        <img class="img-responsive" src="~/images/auctionThumbnails/@Model.Auction.ThumbnailPath" />
     </div>
     <div class="col-sm-6 col-xs-12">
         <h3>@ViewData["Title"]</h3>
@@ -14,10 +34,57 @@
             @Model.Auction.Description
         </div>
         <div style="margin-bottom: 10px; margin-top: 10px;">
-            Do końca aukcji pozostało <strong>@Model.Remains</strong> dni.
+            Oferta od <strong>@Model.Owner.UserName</strong>.
         </div>
-        <div style="text-align: center">
-            <button class="btn btn-primary">Licytuj</button>
-        </div>
+        @if (!Model.Auction.IsEnded)
+        {
+            <div style="margin-bottom: 10px; margin-top: 10px;">
+                Do końca aukcji pozostało <strong>@Model.Remains</strong>.
+            </div>
+
+        }
+        @if (Model.IsBidable)
+        {
+            <div style="text-align: center">
+                <form method="post" asp-controller="Auction" asp-action="AddBidAsync">
+                    <label>
+                        Twoja oferta:
+                        <input name="bidValue" type="number" min="0" max="9999999" class="form-control" />
+                        @if (Model.UserActualBid != 0.0)
+                        {
+                            <span style="font-size: small">(Twoja aktualna oferta @Model.UserActualBid@**@zł)</span>
+
+                        }
+                    </label>
+                    <br>
+                    <button name="id" value="@Model.Auction.AuctionId" class="btn btn-primary">
+                        @if (Model.UserActualBid == 0.0)
+                        {
+                            <div>Licytuj</div>
+
+                        }
+                        else
+                        {
+
+                            <div>Podbij Stawkę</div>
+                        }
+                    </button>
+
+                </form>
+            </div>
+        }
+        else
+        {
+            if (!Model.IsAuctionOwner)
+            {
+                <div style="text-align: center">
+                    <br>
+                    <a asp-controller="Account" asp-action="Login">Zaloguj się</a> by licytowć.
+                </div>
+
+            }
+
+
+        }
     </div>
 </div>

@@ -4,8 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
 namespace BlindBidding.Data.Migrations
@@ -86,6 +84,8 @@ namespace BlindBidding.Data.Migrations
                         .HasMaxLength(5000);
 
                     b.Property<DateTime>("EndDate");
+
+                    b.Property<bool>("IsEnded");
 
                     b.Property<string>("OwnerId");
 

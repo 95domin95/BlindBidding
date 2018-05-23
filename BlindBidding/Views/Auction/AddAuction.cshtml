@@ -4,9 +4,10 @@
     ViewData["Title"] = "Dodaj aukcję";
 }
 
-<script src="~/js/AuctionThumbnailHandler.js"></script>
-
 <div class="row">
+    <div class="alert alert-success bid-added-message" role="alert">
+        Pomyślnie dodano aukcję.
+    </div>
     <div class="col-xs-12">
         <h3>@ViewData["Title"]</h3>
     </div>
@@ -20,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description"></label>
-                <input asp-for="Description" id="description" class="form-control" />
+                <textarea asp-for="Description" id="description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -56,12 +57,13 @@
                 Przeciągnij pliki tutaj.
             </div>
         </div>
-            <div class="col-xs-12" style="text-align: center">
-                <button id="add-auction-btn" class="btn btn-primary">Dodaj aukcję</button>
-            </div>
+        <div class="col-xs-12" style="text-align: center">
+            <button id="add-auction-btn" class="btn btn-primary">Dodaj aukcję</button>
+        </div>
     </form>
 </div>
 
 @section Scripts {
-    @await Html.PartialAsync("_ValidationScriptsPartial")
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/AuctionThumbnailHandler.js"></script>
 }

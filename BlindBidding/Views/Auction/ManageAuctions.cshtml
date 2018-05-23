@@ -1,0 +1,253 @@
+﻿@model BlindBidding.Models.AuctionViewModels.ManageAuctionsViewModel
+
+@{
+    ViewData["Title"] = "Zarządzaj Aukcjami";
+}
+
+<div class="row">
+    <form asp-controller="Auction" asp-action="ManageAuctions" method="get" id="index-form">
+        <div class="col-sm-3 col-xs-12" style="padding-top: 15px;">
+            <label>Typ widoku:</label>
+            <br />
+            @if(Model.IsAuctionAuctionedView)
+            {
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default active">
+                        <input type="radio" name="viewType" value="Auctioned" checked> Licytowane Aukcje<br>
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="viewType" value="My">Moje Aukcje<br>
+                    </label>
+                </div>
+            }
+            else
+            {
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default">
+                        <input type="radio" name="viewType" value="Auctioned"> Licytowane Aukcje<br>
+                    </label>
+                    <label class="btn btn-default active">
+                        <input type="radio" name="viewType" value="My" checked>Moje Aukcje<br>
+                    </label>
+                </div>
+            }
+
+            <br>
+            <br>
+            <label>Ukryj zakończone:</label>
+            <br />
+            @if(Model.IsElementsHidden)
+            {
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default active">
+                        <input type="radio" name="ended" value="hide" checked> Ukryj<br>
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="ended" value="show">Pokaż<br>
+                    </label>
+                </div>
+
+            }
+            else
+            {
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default">
+                        <input type="radio" name="ended" value="hide"> Ukryj<br>
+                    </label>
+                    <label class="btn btn-default active">
+                        <input type="radio" name="ended" value="show" checked>Pokaż<br>
+                    </label>
+                </div>
+
+            }
+
+            <br />
+            <br />
+            <label>Wyszukiwana fraza:</label>
+            <input type="text" class="form-control" name="filter" placeholder="Wyszukaj..." value="@Model.Filter">
+            <br>
+            <label>Kategoria:</label>
+            <select name="category" class="form-control">
+                @foreach (var i in Model.Categories)
+        {
+            @if (i.SubcategoryOf == null)
+    {
+        <optgroup label="@i.Name">
+            @foreach (var j in Model.Categories)
+    {
+        @if (j.SubcategoryOf == i)
+{
+        <option value="@j.Name">@j.Name</option>
+}
+}
+        </optgroup>
+}
+}
+            </select>
+            <br>
+            <label>Elementów na stronie:</label>
+            <select name="onPage" class="form-control">
+                @{ List<int> onPageValue = new List<int>();
+            onPageValue.Add(10); onPageValue.Add(20);
+            onPageValue.Add(50); onPageValue.Add(1);}
+                @foreach (var i in onPageValue)
+        {
+            @if (i.Equals(Convert.ToInt32(Model.OnPage)))
+    {
+        <option value="@i" selected>@i</option>
+}
+else
+{
+        <option value="@i">@i</option>
+}
+}
+            </select>
+            <br>
+            <label>Porządek sortowania:</label>
+            <select name="sortingOrder" class="form-control">
+                @{ List<string> sortOrder = new List<string>();
+            sortOrder.Add("Rosnąco"); sortOrder.Add("Malejąco");}
+                @foreach (var i in sortOrder)
+        {
+            @if (i.Equals(Convert.ToString(Model.SortOrder)))
+    {
+        <option value="@i" selected>@i</option>
+}
+else
+{
+        <option value="@i">@i</option>
+}
+}
+            </select>
+            <br>
+            <label>Sortuj według:</label>
+            <select name="sortingExpression" class="form-control">
+                @{ List<string> sortBy = new List<string>();
+            sortBy.Add("Data Zakończenia");}
+                @foreach (var i in sortBy)
+        {
+            @if (i.Equals(Convert.ToString(Model.SortingExpression)))
+    {
+        <option value="@i" selected>@i</option>
+}
+else
+{
+        <option value="@i">@i</option>
+}
+}
+            </select>
+            <br>
+            <button class="btn btn-primary">Filtruj</button>
+            <br>
+        </div>
+    </form>
+
+    <div class="col-sm-9 col-xs-12">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+    <div class="col-sm-9 col-xs-12">
+        @if(Model.Auctions != null)
+        {
+            @if(Model.Auctions.Count() > 0)
+            {
+                @foreach (var i in Model.Auctions)
+                {
+                    <div class="row auction-in-list">
+                        <div class="items-list-auction-description col-sm-3">
+                            <form method="get">
+                                <input name="id" value="@i.AuctionId" asp-controller="Auction" asp-action="AuctionView" type="image" src="~/images/auctionThumbnails/@i.ThumbnailPath" class="img-responsive" />
+                            </form>
+                        </div>
+                        <div class="col-sm-7" style="font-size: smaller">
+                            <h4>@i.Title
+                            @if((i.EndDate < DateTime.Now||i.IsEnded)&&i.BidId != null)
+                            {
+                                <span style="color: green;">(zakończono pomyślnie)</span>
+                            }
+                            else if((i.EndDate < DateTime.Now || i.IsEnded )&& i.BidId == null)
+                            {
+                                <span style="color: orange;">(nie udało się sprzedać)</span>
+                            }
+                            </h4>
+                            @i.Description
+                        </div>
+                        <div class="col-sm-2">
+                            <br>
+                            <h5>Data zakończenia:</h5>
+                            @if(i.IsEnded)
+                            {
+                                <strong style="font-size: larger;">Zakończono</strong>
+
+                            }
+                            else
+                            {
+                                @i.EndDate
+
+                            }
+                            <br>
+                            <form method="get">
+                                    <button asp-action="AuctionView" name="id" value="@i.AuctionId" class="btn btn-info" style="margin-top: 5px">Szczegóły</button>
+                            </form>
+                            @if (i.EndDate > DateTime.Now&&!i.IsEnded&&!Model.IsAuctionAuctionedView)
+                            {
+                                <form method="get">
+                                    <button asp-action="EndAuction" name="AuctionId" value="@i.AuctionId" class="btn btn-success" style="margin-top: 5px">Zakończ</button>
+                                </form>
+                       
+                            }
+                        </div>
+                    </div>
+                }
+
+            }
+            else
+            {
+                <div class="alert alert-info" role="alert">
+                    Brak elementów do wyświetlenia
+                </div>
+            }
+
+        }
+
+    </div>
+    <div class="col-xs-12" style="text-align: center">
+        @{ var numberOfPages = Model.NumberOfElements;
+            if (numberOfPages % Model.OnPage != 0)
+            {
+                numberOfPages += 1;
+            }
+            var next = Model.Page + 1;
+            var prev = Model.Page - 1;
+        }
+
+
+
+        <ul class="pagination">
+            <li><button class="btn btn-default" name="page" value="@prev" form="index-form">Poprzednia</button></li>
+            <li><button class="btn btn-default" name="page" value="1" form="index-form">Pierwsza</button></li>
+            @for (int i = 1; i <= numberOfPages; i++)
+            {
+                @if (i > Model.Page - 3 && i < Model.Page + 3)
+                {
+                    @if (i <= Model.NumberOfPages)
+                    {
+
+                        @if (i.Equals(Model.Page))
+                        {
+                            <li><button class="btn btn-primary" name="page" value="@i" form="index-form">@i</button></li>
+
+                        }
+                        else
+                        {
+                            <li><button class="btn btn-default" name="page" value="@i" form="index-form">@i</button></li>
+                        }
+                    }
+
+                }
+
+            }
+            <li><button class="btn btn-default" name="page" value="@numberOfPages" form="index-form">Ostatnia</button></li>
+            <li><button class="btn btn-default" name="page" value="@next" form="index-form">Następna</button></li>
+        </ul>
+    </div>
+</div>

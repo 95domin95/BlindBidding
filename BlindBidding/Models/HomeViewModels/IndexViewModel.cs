@@ -8,6 +8,9 @@ namespace BlindBidding.Models.HomeViewModels
 {
     public class IndexViewModel
     {
+        public int NumberOfPages { get; set; }
+        public int NumberOfElements { get; set; }
+        public int Page { get; set; }
         public string Filter { get; set; }
         public string SortOrder { get; set; }
         public string SortingExpression { get; set; }
