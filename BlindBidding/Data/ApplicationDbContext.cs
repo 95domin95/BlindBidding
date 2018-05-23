@@ -17,6 +17,7 @@ namespace BlindBidding.Data
         public DbSet<Bid> Bids { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Auction> Auctions { get; set; }
+        public DbSet<Favourite> Favourites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -9,57 +9,77 @@
         <div class="col-sm-3 col-xs-12" style="padding-top: 15px;">
             <label>Typ widoku:</label>
             <br />
-            @if(Model.IsAuctionAuctionedView)
+                @if (Model.IsAuctionAuctionedView.Equals("Auctioned"))
+                {
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default active">
+                            <input type="radio" name="viewType" value="Auctioned" checked> Licytowane Aukcje<br>
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="viewType" value="My">Własne<br>
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="viewType" value="Favourite"><span style="color: orange" class="glyphicon glyphicon-star"></span><br>
+                        </label>
+                    </div>
+            }
+            else if(Model.IsAuctionAuctionedView.Equals("Favourite"))
             {
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default active">
-                        <input type="radio" name="viewType" value="Auctioned" checked> Licytowane Aukcje<br>
-                    </label>
-                    <label class="btn btn-default">
-                        <input type="radio" name="viewType" value="My">Moje Aukcje<br>
-                    </label>
-                </div>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="radio" name="viewType" value="Auctioned"> Licytowane Aukcje<br>
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="viewType" value="My">Własne<br>
+                        </label>
+                        <label class="btn btn-default active">
+                            <input type="radio" name="viewType" value="Favourite"  checked><span style="color: orange" class="glyphicon glyphicon-star"></span><br>
+                        </label>
+                    </div>
             }
             else
             {
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default">
-                        <input type="radio" name="viewType" value="Auctioned"> Licytowane Aukcje<br>
-                    </label>
-                    <label class="btn btn-default active">
-                        <input type="radio" name="viewType" value="My" checked>Moje Aukcje<br>
-                    </label>
-                </div>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default">
+                            <input type="radio" name="viewType" value="Auctioned"> Licytowane Aukcje<br>
+                        </label>
+                        <label class="btn btn-default active">
+                            <input type="radio" name="viewType" value="My" checked>Własne<br>
+                        </label>
+                        <label class="btn btn-default">
+                            <input type="radio" name="viewType" value="Favourite"><span style="color: orange" class="glyphicon glyphicon-star"></span><br>
+                        </label>
+                    </div>
             }
 
             <br>
             <br>
             <label>Ukryj zakończone:</label>
             <br />
-            @if(Model.IsElementsHidden)
-            {
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default active">
-                        <input type="radio" name="ended" value="hide" checked> Ukryj<br>
-                    </label>
-                    <label class="btn btn-default">
-                        <input type="radio" name="ended" value="show">Pokaż<br>
-                    </label>
-                </div>
+            @if (Model.IsElementsHidden)
+    {
+        <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-default active">
+                <input type="radio" name="ended" value="hide" checked> Ukryj<br>
+            </label>
+            <label class="btn btn-default">
+                <input type="radio" name="ended" value="show">Pokaż<br>
+            </label>
+        </div>
 
-            }
-            else
-            {
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-default">
-                        <input type="radio" name="ended" value="hide"> Ukryj<br>
-                    </label>
-                    <label class="btn btn-default active">
-                        <input type="radio" name="ended" value="show" checked>Pokaż<br>
-                    </label>
-                </div>
+}
+else
+{
+        <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-default">
+                <input type="radio" name="ended" value="hide"> Ukryj<br>
+            </label>
+            <label class="btn btn-default active">
+                <input type="radio" name="ended" value="show" checked>Pokaż<br>
+            </label>
+        </div>
 
-            }
+}
 
             <br />
             <br />
@@ -188,7 +208,10 @@ else
                             <form method="get">
                                     <button asp-action="AuctionView" name="id" value="@i.AuctionId" class="btn btn-info" style="margin-top: 5px">Szczegóły</button>
                             </form>
-                            @if (i.EndDate > DateTime.Now&&!i.IsEnded&&!Model.IsAuctionAuctionedView)
+                            <form method="get">
+                                    <button asp-action="AddToFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: orange" class="glyphicon glyphicon-star"></span></button>
+                            </form>
+                            @if (i.EndDate > DateTime.Now&&!i.IsEnded&&Model.IsAuctionAuctionedView.Equals("My"))
                             {
                                 <form method="get">
                                     <button asp-action="EndAuction" name="AuctionId" value="@i.AuctionId" class="btn btn-success" style="margin-top: 5px">Zakończ</button>

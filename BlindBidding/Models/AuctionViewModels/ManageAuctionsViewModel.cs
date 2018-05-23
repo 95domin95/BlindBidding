@@ -8,7 +8,7 @@ namespace BlindBidding.Models.AuctionViewModels
 {
     public class ManageAuctionsViewModel : IndexViewModel
     {
-        public bool IsAuctionAuctionedView { get; set; }
+        public string IsAuctionAuctionedView { get; set; }
 
         public bool IsElementsHidden { get; set; }
     }

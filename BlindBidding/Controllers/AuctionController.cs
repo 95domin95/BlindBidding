@@ -163,6 +163,11 @@ namespace BlindBidding.Controllers
                 case "Auctioned":
                     auctions = _context.Auctions.Where(a => a.Category.Name.Equals(category) && a.Bid != null && a.Bid.User.Equals(user));
                     break;
+                case "Favourite":
+                    auctions = from p in _context.Favourites
+                                   join o in _context.Auctions on p.AuctionId equals o.AuctionId
+                                   select o;
+                    break;
                 default:
                     auctions = auctions.Where(a => a.Owner.Equals(user));
                     break;
@@ -214,7 +219,7 @@ namespace BlindBidding.Controllers
                 Page = page,
                 NumberOfElements = numberOfElements,
                 NumberOfPages = numberOfPages,
-                IsAuctionAuctionedView = viewType.Equals("Auctioned"),
+                IsAuctionAuctionedView = viewType,
                 IsElementsHidden = ended.Equals("hide")
             });
         }
@@ -224,6 +229,28 @@ namespace BlindBidding.Controllers
             var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
 
             auction.IsEnded = true;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("ManageAuctions");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddToFavourites(int AuctionId)
+        {
+            var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
+
+            var favoutite = new Favourite()
+            {
+                Auction = auction,
+                User = await _userManager.GetUserAsync(HttpContext.User),
+                IsFavourite = true
+            };
+//tu skończyłem ostatnio
+//TODO
+//ograniczyć dodawanie do ulubionych żeby nie można 
+//było swoich projektów dodawać
+            _context.Favourites.Add(favoutite);
 
             _context.SaveChanges();
 

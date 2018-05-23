@@ -11,5 +11,6 @@ namespace BlindBidding.Models
     {
         public virtual IEnumerable<Auction> Auctions { get; set; }
         public virtual IEnumerable<Bid> Bids { get; set; }
+        public virtual IEnumerable<Favourite> Favourites { get; set; }
     }
 }
