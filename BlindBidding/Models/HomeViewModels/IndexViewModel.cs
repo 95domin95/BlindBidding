@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace BlindBidding.Models.HomeViewModels
 {
     public class IndexViewModel
-    {
+    { 
+        public ApplicationUser LogedUser { get; set; }
         public int NumberOfPages { get; set; }
         public int NumberOfElements { get; set; }
         public int Page { get; set; }
@@ -16,6 +17,8 @@ namespace BlindBidding.Models.HomeViewModels
         public string SortingExpression { get; set; }
         public string Category { get; set; }
         public int OnPage { get; set; }
+        public IEnumerable<Favourite> Favourites { get; set; }
+        public IEnumerable<Auction> UserFavouriteAuctions { get; set; }
         public IEnumerable<Auction> Auctions { get; set; }
         public IEnumerable<Category> Categories { get; set; }
     }

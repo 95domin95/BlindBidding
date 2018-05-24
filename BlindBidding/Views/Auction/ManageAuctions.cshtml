@@ -143,7 +143,7 @@ else
             <label>Sortuj według:</label>
             <select name="sortingExpression" class="form-control">
                 @{ List<string> sortBy = new List<string>();
-            sortBy.Add("Data Zakończenia");}
+            sortBy.Add("Data Zakończenia"); sortBy.Add("Data Dodania");}
                 @foreach (var i in sortBy)
         {
             @if (i.Equals(Convert.ToString(Model.SortingExpression)))
@@ -204,13 +204,52 @@ else
                                 @i.EndDate
 
                             }
-                            <br>
+                            <br>                            
                             <form method="get">
                                     <button asp-action="AuctionView" name="id" value="@i.AuctionId" class="btn btn-info" style="margin-top: 5px">Szczegóły</button>
                             </form>
-                            <form method="get">
-                                    <button asp-action="AddToFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: orange" class="glyphicon glyphicon-star"></span></button>
-                            </form>
+                            @if (Model.LogedUser != null)
+                            {
+                                bool check = true;
+                                bool canDeleteFromFavourites = false;
+                                @foreach(var j in Model.UserFavouriteAuctions)
+                                {
+                                    @if(j.Equals(i))
+                                    {
+                                        @foreach(var k in Model.Favourites)
+                                        {
+                                            @if(k.AuctionId.Equals(j.AuctionId))
+                                            {
+                                                @if(k.IsFavourite)
+                                                {
+                                                    canDeleteFromFavourites = true;
+
+                                                }
+
+                                            }
+
+                                        }
+                                        check = false;
+
+                                    }
+
+                                }
+                                @if(check)
+                                {
+                                    <form method="get">
+                                        <button asp-controller="Auction" asp-action="AddToFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: orange" class="glyphicon glyphicon-star"></span></button>
+                                    </form>
+
+                                }
+                                else if(canDeleteFromFavourites)
+                                {
+
+                                    <form method="get">
+                                        <button asp-controller="Auction" asp-action="DeleteFromFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: red" class="glyphicon glyphicon-remove"></span></button>
+                                    </form>
+                                }
+
+                            }
                             @if (i.EndDate > DateTime.Now&&!i.IsEnded&&Model.IsAuctionAuctionedView.Equals("My"))
                             {
                                 <form method="get">

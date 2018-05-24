@@ -173,7 +173,7 @@ namespace BlindBidding.Controllers
                     break;
             }
 
-            if (ended.Equals("hide")) auctions = auctions.Where(a => a.IsEnded.Equals(true));
+            if (ended.Equals("hide")) auctions = auctions.Where(a => a.IsEnded.Equals(false));
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
@@ -193,15 +193,39 @@ namespace BlindBidding.Controllers
 
             if (page.Equals(numberOfPages)) elToTake = auctions.Count() - ((numberOfPages - 1) * onPage);
 
-            if(numberOfElements>0)auctions = auctions.Skip((page - 1) * onPage).Take(elToTake);
+            var favouriteAuctions = from p in _context.Favourites
+                                    join o in _context.Auctions on p.AuctionId equals o.AuctionId
+                                    select o;
+
+            var favourites = _context.Favourites.Where(f => f.User.Equals(user));
+
+            List<Auction> tmp = new List<Auction>();
+
+            if (numberOfElements>0)
+            {
+                auctions = auctions.Skip((page - 1) * onPage).Take(elToTake);
+
+                if (user != null && favourites.Count() > 0)
+                {
+                    foreach (var i in auctions)
+                    {
+                        foreach (var j in favourites)
+                        {
+                            if (i.Equals(j.Auction) && j.IsFavourite) tmp.Add(i);
+                        }
+                    }
+                }
+            }
 
             switch (sortingOrder)
             {
                 case "Rosnąco":
-                    auctions = auctions.OrderBy(a => a.EndDate);
+                    if (sortingExpression == "Data zakończenia") auctions = auctions.OrderBy(a => a.EndDate);
+                    else auctions = auctions.OrderBy(a => a.StartDate);
                     break;
                 case "Malejąco":
-                    auctions = auctions.OrderByDescending(a => a.EndDate);
+                    if (sortingExpression == "Data zakończenia") auctions = auctions.OrderByDescending(a => a.EndDate);
+                    else auctions = auctions.OrderByDescending(a => a.StartDate);
                     break;
                 default:
                     break;
@@ -220,7 +244,10 @@ namespace BlindBidding.Controllers
                 NumberOfElements = numberOfElements,
                 NumberOfPages = numberOfPages,
                 IsAuctionAuctionedView = viewType,
-                IsElementsHidden = ended.Equals("hide")
+                IsElementsHidden = ended.Equals("hide"),
+                LogedUser = user,
+                UserFavouriteAuctions = tmp,
+                Favourites = favourites
             });
         }
         [HttpGet]
@@ -240,19 +267,42 @@ namespace BlindBidding.Controllers
         {
             var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
 
-            var favoutite = new Favourite()
+            if (auction != null)
             {
-                Auction = auction,
-                User = await _userManager.GetUserAsync(HttpContext.User),
-                IsFavourite = true
-            };
-//tu skończyłem ostatnio
-//TODO
-//ograniczyć dodawanie do ulubionych żeby nie można 
-//było swoich projektów dodawać
-            _context.Favourites.Add(favoutite);
+                var favourite = _context.Favourites.Where(f => f.Auction.Equals(auction)).FirstOrDefault();
+                if(favourite!=null)
+                {
+                    favourite.IsFavourite = true;
+                }
+                else
+                {
+                    var favoutite = new Favourite()
+                    {
+                        Auction = auction,
+                        User = await _userManager.GetUserAsync(HttpContext.User),
+                        IsFavourite = true
+                    };
 
-            _context.SaveChanges();
+                    _context.Favourites.Add(favoutite);
+                }
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("ManageAuctions");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteFromFavourites(int AuctionId)
+        {
+            var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
+
+            if(auction!=null)
+            {
+                var favourite = _context.Favourites.Where(f => f.Auction.Equals(auction)).FirstOrDefault();
+                favourite.IsFavourite = false;
+                _context.SaveChanges();
+            }
+            
 
             return RedirectToAction("ManageAuctions");
         }

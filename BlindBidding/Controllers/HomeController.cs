@@ -9,22 +9,46 @@ using BlindBidding.Data;
 using BlindBidding.Models.HomeViewModels;
 using ReflectionIT.Mvc.Paging;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using BlindBidding.Services;
+using Microsoft.Extensions.Logging;
+using System.Text.Encodings.Web;
 
 namespace BlindBidding.Controllers
 {
     public class HomeController : Controller
     {
-        private ApplicationDbContext _context;
-        public HomeController(ApplicationDbContext context)
+        private IHostingEnvironment _hostingEnv;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
+        private readonly ILogger _logger;
+        private readonly UrlEncoder _urlEncoder;
+        public HomeController(
+          ApplicationDbContext context,
+          UserManager<ApplicationUser> userManager,
+          SignInManager<ApplicationUser> signInManager,
+          IEmailSender emailSender,
+          ILogger<ManageController> logger,
+          UrlEncoder urlEncoder,
+          IHostingEnvironment env)
         {
             _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _emailSender = emailSender;
+            _logger = logger;
+            _urlEncoder = urlEncoder;
+            _hostingEnv = env;
         }
 
         public IActionResult HomePage()
         {
-            var newAuctions = _context.Auctions.OrderByDescending(a => a.StartDate);
+            var newAuctions = _context.Auctions.OrderByDescending(a => a.StartDate).Take(5);
 
-            var endingAuctions = _context.Auctions.OrderByDescending(a => a.EndDate);
+            var endingAuctions = _context.Auctions.OrderByDescending(a => a.EndDate).Take(5);
 
             return View(new HomePageViewModel() {
                 NewAuctions = newAuctions,
@@ -32,9 +56,10 @@ namespace BlindBidding.Controllers
             });
         }
 
-        public IActionResult Index(string filter="", int page=1, int onPage=10, 
+        public async Task<IActionResult> Index(string filter="", int page=1, int onPage=10, 
             string sortingOrder="Rosnąco", string sortingExpression="Data zakończenia", string category="Samochody osobowe", string message="")
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
 
             var categories = from Categories in _context.Categories select Categories;
 
@@ -69,15 +94,39 @@ namespace BlindBidding.Controllers
 
             if (page.Equals(numberOfPages)) elToTake = auctions.Count() - ((numberOfPages - 1) * onPage);
 
-            if(numberOfElements > 0)auctions = auctions.Skip((page-1)*onPage).Take(elToTake);
+            var favouriteAuctions = from p in _context.Favourites
+                                    join o in _context.Auctions on p.AuctionId equals o.AuctionId
+                                    select o;
+
+            var favourites = _context.Favourites.Where(f => f.User.Equals(user));
+
+            List<Auction> tmp = new List<Auction>();
+
+            if (numberOfElements > 0)
+            {
+                auctions = auctions.Skip((page - 1) * onPage).Take(elToTake);
+
+                if(user!=null&&favourites.Count() > 0)
+                {
+                    foreach (var i in auctions)
+                    {
+                        foreach (var j in favourites)
+                        {
+                            if (i.Equals(j.Auction) && j.IsFavourite) tmp.Add(i);
+                        }
+                    }
+                }
+            }
 
             switch (sortingOrder)
             {
                 case "Rosnąco":
-                    auctions = auctions.OrderBy(a => a.EndDate);
+                    if(sortingExpression == "Data zakończenia") auctions = auctions.OrderBy(a => a.EndDate);
+                    else auctions = auctions.OrderBy(a => a.StartDate);
                     break;
                 case "Malejąco":
-                    auctions = auctions.OrderByDescending(a => a.EndDate);
+                    if (sortingExpression == "Data zakończenia") auctions = auctions.OrderByDescending(a => a.EndDate);
+                    else auctions = auctions.OrderByDescending(a => a.StartDate);
                     break;
                 default:
                     break;
@@ -96,7 +145,10 @@ namespace BlindBidding.Controllers
                 Auctions = auctions,
                 Page = page,
                 NumberOfElements = numberOfElements,
-                NumberOfPages = numberOfPages
+                NumberOfPages = numberOfPages,
+                LogedUser = user,
+                UserFavouriteAuctions = tmp,
+                Favourites = favourites
             });
         }
 
