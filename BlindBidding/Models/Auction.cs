@@ -10,6 +10,7 @@ namespace BlindBidding.Models
 {
     public class Auction
     {
+        public bool IsHighlighted { get; set; }
         public bool IsEnded { get; set; }
         public int AuctionId { get; set; }
         [StringLength(70)]

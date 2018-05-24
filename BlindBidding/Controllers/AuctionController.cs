@@ -68,11 +68,6 @@ namespace BlindBidding.Controllers
             });
         }
 
-        public IActionResult DeleteAuction()
-        {
-            return View();
-        }
-
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> AddAuction([FromBody]AddAuctionFormData formData)
@@ -145,11 +140,54 @@ namespace BlindBidding.Controllers
             return new JsonResult(response);
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> RemoveFromHighlighted(int AuctionId)
+        {
+            var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
 
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (user.HasHighlightedAuction)
+            {
+                user.HasHighlightedAuction = false;
+                _context.SaveChanges();
+
+                auction.IsHighlighted = false;
+                _context.SaveChanges();
+            }
+
+            string message = "Usunięto z wyróżnionych";
+
+            return RedirectToAction("ManageAuctions", new { message });
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> AddToHighlighted(int AuctionId)
+        {
+            var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if(!user.HasHighlightedAuction)
+            {
+                user.HasHighlightedAuction = true;
+                _context.SaveChanges();
+
+                auction.IsHighlighted = true;
+                _context.SaveChanges();
+            }
+
+            string message = "Wyróżniono aukcję(pozostało 0 wyróżnień, usuń wyróżnienie by dodać kolejne)";
+
+            return RedirectToAction("ManageAuctions", new { message });
+        }
 
         [Authorize]
-        public async Task<IActionResult> ManageAuctions(string viewType="My", string filter = "", int page = 1, int onPage = 10,
-           string sortingOrder = "Rosnąco", string sortingExpression = "Data zakończenia", string category = "Samochody osobowe", string ended="show")
+        public async Task<IActionResult> ManageAuctions(string viewType="My", string filter = "",
+            int page = 1, int onPage = 10, string sortingOrder = "Rosnąco", string sortingExpression = "Data zakończenia",
+            string category = "Samochody osobowe", string ended="show", string message="")
         {
             var categories = from Categories in _context.Categories select Categories;
 
@@ -234,6 +272,8 @@ namespace BlindBidding.Controllers
                     break;
             }
 
+            ViewData["message"] = message;
+
             return View(new ManageAuctionsViewModel()
             {
                 OnPage = onPage,
@@ -253,7 +293,9 @@ namespace BlindBidding.Controllers
                 Favourites = favourites
             });
         }
+
         [HttpGet]
+        [Authorize]
         public IActionResult EndAuction(int AuctionId)
         {
             var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
@@ -262,10 +304,37 @@ namespace BlindBidding.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction("ManageAuctions");
+            string message = "Zakończono aukcję";
+
+            return RedirectToAction("ManageAuctions", new { message });
         }
 
         [HttpGet]
+        [Authorize]
+        public IActionResult DeleteAuction(int AuctionId)
+        {
+            var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
+
+            if(auction.IsHighlighted)
+            {
+                var user = _context.Users.Where(u => u.Id.Equals(auction.OwnerId)).FirstOrDefault();
+
+                user.HasHighlightedAuction = false;
+
+                _context.SaveChanges();
+            }
+
+            _context.Auctions.Remove(auction);
+
+            _context.SaveChanges();
+
+            string message = "Usunięto aukcję";
+
+            return RedirectToAction("ManageAuctions", new { message });
+        }
+
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> AddToFavourites(int AuctionId)
         {
             var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
@@ -291,10 +360,13 @@ namespace BlindBidding.Controllers
                 _context.SaveChanges();
             }
 
-            return RedirectToAction("ManageAuctions");
+            string message = "Dodano do obserwowanych";
+
+            return RedirectToAction("ManageAuctions", new { message });
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> DeleteFromFavourites(int AuctionId)
         {
             var auction = _context.Auctions.Where(a => a.AuctionId.Equals(AuctionId)).FirstOrDefault();
@@ -305,9 +377,10 @@ namespace BlindBidding.Controllers
                 favourite.IsFavourite = false;
                 _context.SaveChanges();
             }
-            
 
-            return RedirectToAction("ManageAuctions");
+            string message = "Usunięto z obserwowanych";
+
+            return RedirectToAction("ManageAuctions", new { message });
         }
 
         [HttpGet]
@@ -388,6 +461,7 @@ namespace BlindBidding.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddBidAsync(int id, int bidValue)
         {
             string message = String.Empty;

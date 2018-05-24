@@ -111,17 +111,26 @@ else
                 {
                     if (!i.IsEnded)
                     {
-                        <div class="row auction-in-list">
-                            <div class="items-list-auction-description col-sm-3">
+                        <div id="auctionNum_@i.AuctionId" class="row auction-in-list">
+                            @if(i.IsHighlighted)
+                            {
+                            <script>
+                                    window.addEventListener("load", function () {
+                                        $('#auctionNum_@i.AuctionId').css("background-color","yellow");
+                                    }, false);
+                            </script>
+
+                            }
+                            <div class="items-list-auction-description col-sm-3 col-xs-12">
                                 <form method="get">
                                     <input name="id" value="@i.AuctionId" asp-controller="Auction" asp-action="AuctionView" type="image" src="~/images/auctionThumbnails/@i.ThumbnailPath" class="img-responsive" />
                                 </form>
                             </div>
-                            <div class="col-sm-7" style="font-size: smaller">
+                            <div class="col-sm-6 col-xs-12" style="font-size: smaller">
                                 <h4>@i.Title</h4>
                                 @i.Description
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-3 col-xs-12">
                                 <br>
                                 <h5>Data zakończenia:</h5>
                                 @if (i.IsEnded)

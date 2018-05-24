@@ -10,12 +10,12 @@ namespace BlindBidding.Models.AuctionViewModels
     {
         [Required(ErrorMessage ="Pole wymagane")]
         [Display(Name = "Tytuł aukcji")]
-        [StringLength(100, ErrorMessage = "{0} musi mieć conajmniej {2} znaków i maksymalnie {1}.", MinimumLength = 6)]
+        [StringLength(70, ErrorMessage = "{0} musi mieć conajmniej {2} znaków i maksymalnie {1}.", MinimumLength = 6)]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Pole wymagane")]
         [Display(Name = "Krótki opis")]
-        [StringLength(5000, ErrorMessage = "{0} musi mieć conajmniej {2} znaków i maksymalnie {1}.", MinimumLength = 6)]
+        [StringLength(850, ErrorMessage = "{0} musi mieć conajmniej {2} znaków i maksymalnie {1}.", MinimumLength = 6)]
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Pole wymagane")]

@@ -9,47 +9,47 @@
         <div class="col-sm-3 col-xs-12" style="padding-top: 15px;">
             <label>Typ widoku:</label>
             <br />
-                @if (Model.IsAuctionAuctionedView.Equals("Auctioned"))
-                {
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default active">
-                            <input type="radio" name="viewType" value="Auctioned" checked> Licytowane Aukcje<br>
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="radio" name="viewType" value="My">Własne<br>
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="radio" name="viewType" value="Favourite"><span style="color: orange" class="glyphicon glyphicon-star"></span><br>
-                        </label>
-                    </div>
-            }
-            else if(Model.IsAuctionAuctionedView.Equals("Favourite"))
+            @if (Model.IsAuctionAuctionedView.Equals("Auctioned"))
             {
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default">
-                            <input type="radio" name="viewType" value="Auctioned"> Licytowane Aukcje<br>
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="radio" name="viewType" value="My">Własne<br>
-                        </label>
-                        <label class="btn btn-default active">
-                            <input type="radio" name="viewType" value="Favourite"  checked><span style="color: orange" class="glyphicon glyphicon-star"></span><br>
-                        </label>
-                    </div>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default active">
+                        <input type="radio" name="viewType" value="Auctioned" checked> Licytowane Aukcje<br>
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="viewType" value="My">Własne<br>
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="viewType" value="Favourite"><span style="color: orange" class="glyphicon glyphicon-star"></span><br>
+                    </label>
+                </div>
+            }
+            else if (Model.IsAuctionAuctionedView.Equals("Favourite"))
+            {
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default">
+                        <input type="radio" name="viewType" value="Auctioned"> Licytowane Aukcje<br>
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="viewType" value="My">Własne<br>
+                    </label>
+                    <label class="btn btn-default active">
+                        <input type="radio" name="viewType" value="Favourite" checked><span style="color: orange" class="glyphicon glyphicon-star"></span><br>
+                    </label>
+                </div>
             }
             else
             {
-                    <div class="btn-group" data-toggle="buttons">
-                        <label class="btn btn-default">
-                            <input type="radio" name="viewType" value="Auctioned"> Licytowane Aukcje<br>
-                        </label>
-                        <label class="btn btn-default active">
-                            <input type="radio" name="viewType" value="My" checked>Własne<br>
-                        </label>
-                        <label class="btn btn-default">
-                            <input type="radio" name="viewType" value="Favourite"><span style="color: orange" class="glyphicon glyphicon-star"></span><br>
-                        </label>
-                    </div>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default">
+                        <input type="radio" name="viewType" value="Auctioned"> Licytowane Aukcje<br>
+                    </label>
+                    <label class="btn btn-default active">
+                        <input type="radio" name="viewType" value="My" checked>Własne<br>
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="viewType" value="Favourite"><span style="color: orange" class="glyphicon glyphicon-star"></span><br>
+                    </label>
+                </div>
             }
 
             <br>
@@ -57,29 +57,29 @@
             <label>Ukryj zakończone:</label>
             <br />
             @if (Model.IsElementsHidden)
-    {
-        <div class="btn-group" data-toggle="buttons">
-            <label class="btn btn-default active">
-                <input type="radio" name="ended" value="hide" checked> Ukryj<br>
-            </label>
-            <label class="btn btn-default">
-                <input type="radio" name="ended" value="show">Pokaż<br>
-            </label>
-        </div>
+            {
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default active">
+                        <input type="radio" name="ended" value="hide" checked> Ukryj<br>
+                    </label>
+                    <label class="btn btn-default">
+                        <input type="radio" name="ended" value="show">Pokaż<br>
+                    </label>
+                </div>
 
-}
-else
-{
-        <div class="btn-group" data-toggle="buttons">
-            <label class="btn btn-default">
-                <input type="radio" name="ended" value="hide"> Ukryj<br>
-            </label>
-            <label class="btn btn-default active">
-                <input type="radio" name="ended" value="show" checked>Pokaż<br>
-            </label>
-        </div>
+            }
+            else
+            {
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-default">
+                        <input type="radio" name="ended" value="hide"> Ukryj<br>
+                    </label>
+                    <label class="btn btn-default active">
+                        <input type="radio" name="ended" value="show" checked>Pokaż<br>
+                    </label>
+                </div>
 
-}
+            }
 
             <br />
             <br />
@@ -89,177 +89,215 @@ else
             <label>Kategoria:</label>
             <select name="category" class="form-control">
                 @foreach (var i in Model.Categories)
-        {
-            @if (i.SubcategoryOf == null)
-    {
-        <optgroup label="@i.Name">
-            @foreach (var j in Model.Categories)
-    {
-        @if (j.SubcategoryOf == i)
-{
-        <option value="@j.Name">@j.Name</option>
-}
-}
-        </optgroup>
-}
-}
+                {
+                    @if (i.SubcategoryOf == null)
+                    {
+                        <optgroup label="@i.Name">
+                            @foreach (var j in Model.Categories)
+                            {
+                                @if (j.SubcategoryOf == i)
+                                {
+                                    <option value="@j.Name">@j.Name</option>
+                                }
+                            }
+                        </optgroup>
+                    }
+                }
             </select>
             <br>
             <label>Elementów na stronie:</label>
             <select name="onPage" class="form-control">
                 @{ List<int> onPageValue = new List<int>();
-            onPageValue.Add(10); onPageValue.Add(20);
-            onPageValue.Add(50); onPageValue.Add(1);}
+                    onPageValue.Add(10); onPageValue.Add(20);
+                    onPageValue.Add(50); onPageValue.Add(1);}
                 @foreach (var i in onPageValue)
-        {
-            @if (i.Equals(Convert.ToInt32(Model.OnPage)))
-    {
-        <option value="@i" selected>@i</option>
-}
-else
-{
-        <option value="@i">@i</option>
-}
-}
+                {
+                    @if (i.Equals(Convert.ToInt32(Model.OnPage)))
+                    {
+                        <option value="@i" selected>@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
             </select>
             <br>
             <label>Porządek sortowania:</label>
             <select name="sortingOrder" class="form-control">
                 @{ List<string> sortOrder = new List<string>();
-            sortOrder.Add("Rosnąco"); sortOrder.Add("Malejąco");}
+                    sortOrder.Add("Rosnąco"); sortOrder.Add("Malejąco");}
                 @foreach (var i in sortOrder)
-        {
-            @if (i.Equals(Convert.ToString(Model.SortOrder)))
-    {
-        <option value="@i" selected>@i</option>
-}
-else
-{
-        <option value="@i">@i</option>
-}
-}
+                {
+                    @if (i.Equals(Convert.ToString(Model.SortOrder)))
+                    {
+                        <option value="@i" selected>@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
             </select>
             <br>
             <label>Sortuj według:</label>
             <select name="sortingExpression" class="form-control">
                 @{ List<string> sortBy = new List<string>();
-            sortBy.Add("Data Zakończenia"); sortBy.Add("Data Dodania");}
+                    sortBy.Add("Data Zakończenia"); sortBy.Add("Data Dodania");}
                 @foreach (var i in sortBy)
-        {
-            @if (i.Equals(Convert.ToString(Model.SortingExpression)))
-    {
-        <option value="@i" selected>@i</option>
-}
-else
-{
-        <option value="@i">@i</option>
-}
-}
+                {
+                    @if (i.Equals(Convert.ToString(Model.SortingExpression)))
+                    {
+                        <option value="@i" selected>@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
             </select>
             <br>
             <button class="btn btn-primary">Filtruj</button>
             <br>
         </div>
     </form>
+    @if (ViewData["message"] != null)
+    {
+        @if (!ViewData["message"].Equals(String.Empty))
+        {
+            <div class="col-sm-9 col-xs-12" style="margin-top: 25px">
+                <div class="alert alert-info" role="alert">
+                    @ViewData["message"]
+                </div>
+            </div>
 
+        }
+
+    }
     <div class="col-sm-9 col-xs-12">
         <h3>@ViewData["Title"]</h3>
     </div>
     <div class="col-sm-9 col-xs-12">
-        @if(Model.Auctions != null)
+        @if (Model.Auctions != null)
         {
-            @if(Model.Auctions.Count() > 0)
+            @if (Model.Auctions.Count() > 0)
             {
                 @foreach (var i in Model.Auctions)
                 {
                     <div class="row auction-in-list">
-                        <div class="items-list-auction-description col-sm-3">
+                        <div class="items-list-auction-description col-sm-3 col-xs-12">
                             <form method="get">
                                 <input name="id" value="@i.AuctionId" asp-controller="Auction" asp-action="AuctionView" type="image" src="~/images/auctionThumbnails/@i.ThumbnailPath" class="img-responsive" />
                             </form>
                         </div>
-                        <div class="col-sm-7" style="font-size: smaller">
-                            <h4>@i.Title
-                            @if((i.EndDate < DateTime.Now||i.IsEnded)&&i.BidId != null)
+                        <div class="col-sm-6 col-xs-12" style="font-size: smaller">
+                            <h4>
+                                @i.Title
+                            @if ((i.EndDate < DateTime.Now || i.IsEnded) && i.BidId != null)
                             {
                                 <span style="color: green;">(zakończono pomyślnie)</span>
                             }
-                            else if((i.EndDate < DateTime.Now || i.IsEnded )&& i.BidId == null)
+                            else if ((i.EndDate < DateTime.Now || i.IsEnded) && i.BidId == null)
                             {
                                 <span style="color: orange;">(nie udało się sprzedać)</span>
                             }
-                            </h4>
-                            @i.Description
-                        </div>
-                        <div class="col-sm-2">
-                            <br>
-                            <h5>Data zakończenia:</h5>
-                            @if(i.IsEnded)
-                            {
-                                <strong style="font-size: larger;">Zakończono</strong>
-
-                            }
-                            else
-                            {
-                                @i.EndDate
-
-                            }
-                            <br>                            
+                        </h4>
+                        @if (!Model.LogedUser.HasHighlightedAuction)
+                        {
                             <form method="get">
-                                    <button asp-action="AuctionView" name="id" value="@i.AuctionId" class="btn btn-info" style="margin-top: 5px">Szczegóły</button>
+                                <button asp-action="AddToHighlighted" name="AuctionId" value="@i.AuctionId" class="btn btn-sm" style="background-color: yellow">Wyróżnij</button>
                             </form>
-                            @if (Model.LogedUser != null)
-                            {
-                                bool check = true;
-                                bool canDeleteFromFavourites = false;
-                                @foreach(var j in Model.UserFavouriteAuctions)
-                                {
-                                    @if(j.Equals(i))
-                                    {
-                                        @foreach(var k in Model.Favourites)
-                                        {
-                                            @if(k.AuctionId.Equals(j.AuctionId))
-                                            {
-                                                @if(k.IsFavourite)
-                                                {
-                                                    canDeleteFromFavourites = true;
 
-                                                }
+                        }
+                        else if (i.IsHighlighted && i.OwnerId.Equals(Model.LogedUser.Id))
+                        {
+                            <form method="get">
+                                <button asp-action="RemoveFromHighlighted" name="AuctionId" value="@i.AuctionId" class="btn btn-sm" style="background-color: yellow">Wyróżnij <span style="color: red" class="glyphicon glyphicon-remove"></span></button>
+                            </form>
+                        }
+
+                        @i.Description
+                    </div>
+                    <div class="col-sm-3 col-xs-12">
+                        <h5>Data zakończenia:</h5>
+                        @if (i.IsEnded)
+                        {
+                            <strong style="font-size: larger;">Zakończono</strong>
+
+                        }
+                        else
+                        {
+                            @i.EndDate
+
+                        }
+                        <br>
+                        <form method="get">
+                            <button asp-action="AuctionView" name="id" value="@i.AuctionId" class="btn btn-info" style="margin-top: 5px">Szczegóły</button>
+                        </form>
+                        @if (Model.LogedUser != null)
+                        {
+                            bool check = true;
+                            bool canDeleteFromFavourites = false;
+                            @foreach (var j in Model.UserFavouriteAuctions)
+                            {
+                                @if (j.Equals(i))
+                                {
+                                    @foreach (var k in Model.Favourites)
+                                    {
+                                        @if (k.AuctionId.Equals(j.AuctionId))
+                                        {
+                                            @if (k.IsFavourite)
+                                            {
+                                                canDeleteFromFavourites = true;
 
                                             }
 
                                         }
-                                        check = false;
 
                                     }
+                                    check = false;
 
-                                }
-                                @if(check)
-                                {
-                                    <form method="get">
-                                        <button asp-controller="Auction" asp-action="AddToFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: orange" class="glyphicon glyphicon-star"></span></button>
-                                    </form>
-
-                                }
-                                else if(canDeleteFromFavourites)
-                                {
-
-                                    <form method="get">
-                                        <button asp-controller="Auction" asp-action="DeleteFromFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: red" class="glyphicon glyphicon-remove"></span></button>
-                                    </form>
                                 }
 
                             }
-                            @if (i.EndDate > DateTime.Now&&!i.IsEnded&&Model.IsAuctionAuctionedView.Equals("My"))
+                            @if (check)
+                            {
+                                <form method="get">
+                                    <button asp-controller="Auction" asp-action="AddToFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: orange" class="glyphicon glyphicon-star"></span></button>
+                                </form>
+
+                            }
+                            else if (canDeleteFromFavourites)
+                            {
+
+                                <form method="get">
+                                    <button asp-controller="Auction" asp-action="DeleteFromFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: red" class="glyphicon glyphicon-remove"></span></button>
+                                </form>
+                            }
+
+                        }
+                        @if (i.EndDate > DateTime.Now && Model.IsAuctionAuctionedView.Equals("My"))
+                        {
+                            @if(i.IsEnded)
+                            {
+                                <form method="get">
+                                    <button asp-action="DeleteAuction" name="AuctionId" value="@i.AuctionId" class="btn btn-danger" style="margin-top: 5px">Usuń aukcję</button>
+                                </form>
+
+                            }
+                            else
                             {
                                 <form method="get">
                                     <button asp-action="EndAuction" name="AuctionId" value="@i.AuctionId" class="btn btn-success" style="margin-top: 5px">Zakończ</button>
                                 </form>
-                       
+
                             }
-                        </div>
+
+
+                        }
                     </div>
-                }
+                </div>
+            }
 
             }
             else
