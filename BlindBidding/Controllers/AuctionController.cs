@@ -145,6 +145,8 @@ namespace BlindBidding.Controllers
             return new JsonResult(response);
         }
 
+
+
         [Authorize]
         public async Task<IActionResult> ManageAuctions(string viewType="My", string filter = "", int page = 1, int onPage = 10,
            string sortingOrder = "Rosnąco", string sortingExpression = "Data zakończenia", string category = "Samochody osobowe", string ended="show")
@@ -166,6 +168,7 @@ namespace BlindBidding.Controllers
                 case "Favourite":
                     auctions = from p in _context.Favourites
                                    join o in _context.Auctions on p.AuctionId equals o.AuctionId
+                                   where p.UserId.Equals(user.Id)&&p.IsFavourite
                                    select o;
                     break;
                 default:

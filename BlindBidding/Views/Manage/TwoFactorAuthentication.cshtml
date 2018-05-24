@@ -1,6 +1,6 @@
 @model TwoFactorAuthenticationViewModel
 @{
-    ViewData["Title"] = "Two-factor authentication";
+    ViewData["Title"] = "Uwierzytelnianie dwusk³adnikowe";
     ViewData.AddActivePage(ManageNavPages.TwoFactorAuthentication);
 }
 
@@ -10,38 +10,38 @@
     if (Model.RecoveryCodesLeft == 0)
     {
         <div class="alert alert-danger">
-            <strong>You have no recovery codes left.</strong>
-            <p>You must <a asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
+            <strong>Nie posiadasz ju¿ kodu przywracaj¹cego.</strong>
+            <p>Musisz <a asp-action="GenerateRecoveryCodes">musisz wygenerowaæ nowy zestaw kodów przywracaj¹cych</a> zanim zalogujesz siê z kodem przywracaj¹cym.</p>
         </div>
     }
     else if (Model.RecoveryCodesLeft == 1)
     {
         <div class="alert alert-danger">
-            <strong>You have 1 recovery code left.</strong>
-            <p>You can <a asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+            <strong>Posiadasz 1 kod przywracaj¹cy.</strong>
+            <p>Mo¿esz <a asp-action="GenerateRecoveryCodes">wygenerowaæ nowy zestaw kodów przywracaj¹cych</a>.</p>
         </div>
     }
     else if (Model.RecoveryCodesLeft <= 3)
     {
         <div class="alert alert-warning">
-            <strong>You have @Model.RecoveryCodesLeft recovery codes left.</strong>
-            <p>You should <a asp-action="GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+            <strong>Posiadasz @Model.RecoveryCodesLeft kodów przywracaj¹cych.</strong>
+            <p>Powinieneœ <a asp-action="GenerateRecoveryCodes">wygenerowaæ nowy zestaw kodów przywracaj¹cych</a>.</p>
         </div>
     }
 
-    <a asp-action="Disable2faWarning" class="btn btn-default">Disable 2FA</a>
-    <a asp-action="GenerateRecoveryCodesWarning" class="btn btn-default">Reset recovery codes</a>
+    <a asp-action="Disable2faWarning" class="btn btn-default">Wy³¹cz 2FA</a>
+    <a asp-action="GenerateRecoveryCodesWarning" class="btn btn-default">Zresetuj kody przywracaj¹ce</a>
 }
 
-<h5>Authenticator app</h5>
+<h5>Aplikacja uwierzytelniaj¹ca</h5>
 @if (!Model.HasAuthenticator)
 {
-    <a asp-action="EnableAuthenticator" class="btn btn-default">Add authenticator app</a>
+    <a asp-action="EnableAuthenticator" class="btn btn-default">Dodaja aplikacjê uwie¿ytelniaj¹c¹</a>
 }
 else
 {
-    <a asp-action="EnableAuthenticator" class="btn btn-default">Configure authenticator app</a>
-    <a asp-action="ResetAuthenticatorWarning" class="btn btn-default">Reset authenticator key</a>
+    <a asp-action="EnableAuthenticator" class="btn btn-default">Skonfiguruj aplikacjê uwie¿ytelniaj¹c¹</a>
+    <a asp-action="ResetAuthenticatorWarning" class="btn btn-default">Zresetuj klucz uwierzytelniaj¹cy</a>
 }
 
 @section Scripts {

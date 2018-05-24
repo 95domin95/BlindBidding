@@ -96,6 +96,7 @@ namespace BlindBidding.Controllers
 
             var favouriteAuctions = from p in _context.Favourites
                                     join o in _context.Auctions on p.AuctionId equals o.AuctionId
+                                    where p.UserId.Equals(user.Id)&&p.IsFavourite
                                     select o;
 
             var favourites = _context.Favourites.Where(f => f.User.Equals(user));
