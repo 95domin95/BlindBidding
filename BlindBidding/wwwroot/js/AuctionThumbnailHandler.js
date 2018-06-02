@@ -73,15 +73,16 @@ window.addEventListener("load", function () {
             if (image !== null && validator) {
 
 
-                var formData = { "Title": title, "Duration": duration, "Description": description, "Category": category, "Data": image };
+                var formData = {
+                    "Title": title, "Duration": duration,
+                    "Description": description, "Category": category, "Data": image
+                };
 
                 $.ajax({
                     type: 'POST',
                     url: '/Auction/AddAuction',
                     dataType: 'JSON',
                     contentType: 'application/json; charset=utf-8',
-                    //contentType: false,
-                    //processData: false,
                     data: JSON.stringify(formData)
                 });
 

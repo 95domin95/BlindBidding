@@ -75,7 +75,8 @@ namespace BlindBidding.Controllers
             string message = String.Empty;
             if (User.Identity.IsAuthenticated)
             {
-                var category = _context.Categories.Where(c => c.Name.Equals(formData.Category)).FirstOrDefault();
+                var category = _context.Categories.Where(c => c.Name.Equals(formData.Category))
+                    .FirstOrDefault();
 
                 var startDate = DateTime.Now;
 
@@ -526,6 +527,16 @@ namespace BlindBidding.Controllers
             //names.Add("Muzyka");
             //names.Add("Edukacja");
             //names.Add("Dom i Ogród");
+
+            //foreach (var i in names)
+            //{
+            //    _context.Categories.Add(new Category()
+            //    {
+            //        SubcategoryOf = null,
+            //        Name = i,
+            //    });
+            //    _context.SaveChanges();
+            //}
 
             //foreach (var i in names)
             //{

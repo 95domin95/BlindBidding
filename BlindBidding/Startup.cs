@@ -37,12 +37,12 @@ namespace BlindBidding
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             }).AddFacebook(facebookOptions =>
             {
-                facebookOptions.AppId = "441655806279946";
-                facebookOptions.AppSecret = "4f173d049d236ceefd1e16b44779081d";
+                facebookOptions.AppId = "223769621543918";/*"441655806279946";*/
+                facebookOptions.AppSecret = "9378a91b4b42c17c1a931a897b7ff08a";/*"4f173d049d236ceefd1e16b44779081d";*/
             }).AddGoogle(googleOptions =>
             {
-                googleOptions.ClientId = "989689344124-b27vetdpg98m74qablcp52otce9ia7an.apps.googleusercontent.com";
-                googleOptions.ClientSecret = "rcbN53dMUsZah-tSn1YiyylK";
+                googleOptions.ClientId = "817804753610-f3diq1mfr2ilq7fsflijmppn8s4fa6gi.apps.googleusercontent.com";/*"989689344124-b27vetdpg98m74qablcp52otce9ia7an.apps.googleusercontent.com";*/
+                googleOptions.ClientSecret = "Ad413lRgvs6UkOG6IvE2Ks6z";/*"rcbN53dMUsZah-tSn1YiyylK";*/
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()

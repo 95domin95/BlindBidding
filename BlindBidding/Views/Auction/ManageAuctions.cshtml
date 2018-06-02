@@ -97,7 +97,13 @@
                             {
                                 @if (j.SubcategoryOf == i)
                                 {
-                                    <option value="@j.Name">@j.Name</option>
+                                    @if(j.Name.Equals(Model.Category))
+                                    {
+
+                                        <option value="@j.Name" selected>@j.Name</option>
+                                    }
+                                    else
+                                    { <option value="@j.Name">@j.Name</option>}
                                 }
                             }
                         </optgroup>
@@ -311,41 +317,50 @@
 
     </div>
     <div class="col-xs-12" style="text-align: center">
-        @{ var numberOfPages = Model.NumberOfElements;
-            if (numberOfPages % Model.OnPage != 0)
-            {
-                numberOfPages += 1;
-            }
-            var next = Model.Page + 1;
-            var prev = Model.Page - 1;
+        @{ var numberOfElements = Model.NumberOfElements;
+        var numberOfPages = Model.NumberOfPages;
+        //if (numberOfElements % Model.OnPage != 0)
+        //{
+        //    numberOfPages += 1;
+        //}
+        var next = Model.Page + 1;
+        var prev = Model.Page - 1;
+        if (next > numberOfPages)
+        {
+            next = numberOfPages;
+
         }
+        if (prev < 1)
+        {
+            prev = 1;
 
-
+        }
+        }
 
         <ul class="pagination">
             <li><button class="btn btn-default" name="page" value="@prev" form="index-form">Poprzednia</button></li>
             <li><button class="btn btn-default" name="page" value="1" form="index-form">Pierwsza</button></li>
             @for (int i = 1; i <= numberOfPages; i++)
-            {
-                @if (i > Model.Page - 3 && i < Model.Page + 3)
-                {
-                    @if (i <= Model.NumberOfPages)
-                    {
+        {
+            @if (i > Model.Page - 3 && i < Model.Page + 3)
+        {
+            @if (i <= Model.NumberOfPages)
+        {
 
-                        @if (i.Equals(Model.Page))
-                        {
-                            <li><button class="btn btn-primary" name="page" value="@i" form="index-form">@i</button></li>
+            @if (i.Equals(Model.Page))
+        {
+            <li><button class="btn btn-primary" name="page" value="@i" form="index-form">@i</button></li>
 
-                        }
-                        else
-                        {
-                            <li><button class="btn btn-default" name="page" value="@i" form="index-form">@i</button></li>
-                        }
-                    }
+    }
+    else
+    {
+        <li><button class="btn btn-default" name="page" value="@i" form="index-form">@i</button></li>
+}
+    }
 
-                }
+    }
 
-            }
+    }
             <li><button class="btn btn-default" name="page" value="@numberOfPages" form="index-form">Ostatnia</button></li>
             <li><button class="btn btn-default" name="page" value="@next" form="index-form">Następna</button></li>
         </ul>
