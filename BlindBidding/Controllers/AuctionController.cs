@@ -188,7 +188,7 @@ namespace BlindBidding.Controllers
         [Authorize]
         public async Task<IActionResult> ManageAuctions(string viewType="My", string filter = "",
             int page = 1, int onPage = 10, string sortingOrder = "Rosnąco", string sortingExpression = "Data zakończenia",
-            string category = "Samochody osobowe", string ended="show", string message="")
+            string category = "RTV/AGD", string ended="show", string message="")
         {
             var categories = from Categories in _context.Categories select Categories;
 

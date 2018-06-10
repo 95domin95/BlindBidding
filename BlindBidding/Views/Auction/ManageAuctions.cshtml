@@ -4,6 +4,23 @@
     ViewData["Title"] = "Zarządzaj Aukcjami";
 }
 
+@*<script>
+    window.addEventListener("load", function () {
+
+        var height = parseInt($(window).height() / 4);
+
+        $(".item-in-list").height(height);
+
+        $(window).resize(function () {
+
+            height = parseInt($(window).height() / 4);
+
+            $(".item-in-list").height(height);
+        });
+
+    }, false);
+</script>*@
+
 <div class="row">
     <form asp-controller="Auction" asp-action="ManageAuctions" method="get" id="index-form">
         <div class="col-sm-3 col-xs-12" style="padding-top: 15px;">
@@ -97,13 +114,14 @@
                             {
                                 @if (j.SubcategoryOf == i)
                                 {
-                                    @if(j.Name.Equals(Model.Category))
+                                    @if (j.Name.Equals(Model.Category))
                                     {
 
                                         <option value="@j.Name" selected>@j.Name</option>
                                     }
                                     else
-                                    { <option value="@j.Name">@j.Name</option>}
+                                    {
+                                        <option value="@j.Name">@j.Name</option>}
                                 }
                             }
                         </optgroup>
@@ -193,117 +211,117 @@
                     <div class="row auction-in-list">
                         <div class="items-list-auction-description col-sm-3 col-xs-12">
                             <form method="get">
-                                <input name="id" value="@i.AuctionId" asp-controller="Auction" asp-action="AuctionView" type="image" src="~/images/auctionThumbnails/@i.ThumbnailPath" class="img-responsive" />
+                                <input name="id" value="@i.AuctionId" asp-controller="Auction" asp-action="AuctionView" type="image" src="~/images/auctionThumbnails/@i.ThumbnailPath" class="img-responsive item-in-list" />
                             </form>
                         </div>
                         <div class="col-sm-6 col-xs-12" style="font-size: smaller">
                             <h4>
                                 @i.Title
-                            @if ((i.EndDate < DateTime.Now || i.IsEnded) && i.BidId != null)
-                            {
-                                <span style="color: green;">(zakończono pomyślnie)</span>
-                            }
-                            else if ((i.EndDate < DateTime.Now || i.IsEnded) && i.BidId == null)
-                            {
-                                <span style="color: orange;">(nie udało się sprzedać)</span>
-                            }
-                        </h4>
-                        @if (!Model.LogedUser.HasHighlightedAuction)
-                        {
-                            <form method="get">
-                                <button asp-action="AddToHighlighted" name="AuctionId" value="@i.AuctionId" class="btn btn-sm" style="background-color: yellow">Wyróżnij</button>
-                            </form>
-
-                        }
-                        else if (i.IsHighlighted && i.OwnerId.Equals(Model.LogedUser.Id))
-                        {
-                            <form method="get">
-                                <button asp-action="RemoveFromHighlighted" name="AuctionId" value="@i.AuctionId" class="btn btn-sm" style="background-color: yellow">Wyróżnij <span style="color: red" class="glyphicon glyphicon-remove"></span></button>
-                            </form>
-                        }
-
-                        @i.Description
-                    </div>
-                    <div class="col-sm-3 col-xs-12">
-                        <h5>Data zakończenia:</h5>
-                        @if (i.IsEnded)
-                        {
-                            <strong style="font-size: larger;">Zakończono</strong>
-
-                        }
-                        else
-                        {
-                            @i.EndDate
-
-                        }
-                        <br>
-                        <form method="get">
-                            <button asp-action="AuctionView" name="id" value="@i.AuctionId" class="btn btn-info" style="margin-top: 5px">Szczegóły</button>
-                        </form>
-                        @if (Model.LogedUser != null)
-                        {
-                            bool check = true;
-                            bool canDeleteFromFavourites = false;
-                            @foreach (var j in Model.UserFavouriteAuctions)
-                            {
-                                @if (j.Equals(i))
+                                @if ((i.EndDate < DateTime.Now || i.IsEnded) && i.BidId != null)
                                 {
-                                    @foreach (var k in Model.Favourites)
-                                    {
-                                        @if (k.AuctionId.Equals(j.AuctionId))
-                                        {
-                                            @if (k.IsFavourite)
-                                            {
-                                                canDeleteFromFavourites = true;
-
-                                            }
-
-                                        }
-
-                                    }
-                                    check = false;
-
+                                    <span style="color: green;">(zakończono pomyślnie)</span>
                                 }
-
-                            }
-                            @if (check)
+                                else if ((i.EndDate < DateTime.Now || i.IsEnded) && i.BidId == null)
+                                {
+                                    <span style="color: orange;">(nie udało się sprzedać)</span>
+                                }
+                            </h4>
+                            @if (!Model.LogedUser.HasHighlightedAuction)
                             {
                                 <form method="get">
-                                    <button asp-controller="Auction" asp-action="AddToFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: orange" class="glyphicon glyphicon-star"></span></button>
+                                    <button asp-action="AddToHighlighted" name="AuctionId" value="@i.AuctionId" class="btn btn-sm" style="background-color: yellow">Wyróżnij</button>
                                 </form>
 
                             }
-                            else if (canDeleteFromFavourites)
+                            else if (i.IsHighlighted && i.OwnerId.Equals(Model.LogedUser.Id))
                             {
-
                                 <form method="get">
-                                    <button asp-controller="Auction" asp-action="DeleteFromFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: red" class="glyphicon glyphicon-remove"></span></button>
+                                    <button asp-action="RemoveFromHighlighted" name="AuctionId" value="@i.AuctionId" class="btn btn-sm" style="background-color: yellow">Wyróżnij <span style="color: red" class="glyphicon glyphicon-remove"></span></button>
                                 </form>
                             }
 
-                        }
-                        @if (i.EndDate > DateTime.Now && Model.IsAuctionAuctionedView.Equals("My"))
-                        {
-                            @if(i.IsEnded)
+                            @i.Description
+                        </div>
+                        <div class="col-sm-3 col-xs-12">
+                            <h5>Data zakończenia:</h5>
+                            @if (i.IsEnded)
                             {
-                                <form method="get">
-                                    <button asp-action="DeleteAuction" name="AuctionId" value="@i.AuctionId" class="btn btn-danger" style="margin-top: 5px">Usuń aukcję</button>
-                                </form>
+                                <strong style="font-size: larger;">Zakończono</strong>
 
                             }
                             else
                             {
-                                <form method="get">
-                                    <button asp-action="EndAuction" name="AuctionId" value="@i.AuctionId" class="btn btn-success" style="margin-top: 5px">Zakończ</button>
-                                </form>
+                                @i.EndDate
 
                             }
+                            <br>
+                            <form method="get">
+                                <button asp-action="AuctionView" name="id" value="@i.AuctionId" class="btn btn-info" style="margin-top: 5px">Szczegóły</button>
+                            </form>
+                            @if (Model.LogedUser != null)
+                            {
+                                bool check = true;
+                                bool canDeleteFromFavourites = false;
+                                @foreach (var j in Model.UserFavouriteAuctions)
+                                {
+                                    @if (j.Equals(i))
+                                    {
+                                        @foreach (var k in Model.Favourites)
+                                        {
+                                            @if (k.AuctionId.Equals(j.AuctionId))
+                                            {
+                                                @if (k.IsFavourite)
+                                                {
+                                                    canDeleteFromFavourites = true;
+
+                                                }
+
+                                            }
+
+                                        }
+                                        check = false;
+
+                                    }
+
+                                }
+                                @if (check)
+                                {
+                                    <form method="get">
+                                        <button asp-controller="Auction" asp-action="AddToFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: orange" class="glyphicon glyphicon-star"></span></button>
+                                    </form>
+
+                                }
+                                else if (canDeleteFromFavourites)
+                                {
+
+                                    <form method="get">
+                                        <button asp-controller="Auction" asp-action="DeleteFromFavourites" name="AuctionId" value="@i.AuctionId" class="btn btn-default" style="margin-top: 5px">Obserwuj <span style="color: red" class="glyphicon glyphicon-remove"></span></button>
+                                    </form>
+                                }
+
+                            }
+                            @if (i.EndDate > DateTime.Now && Model.IsAuctionAuctionedView.Equals("My"))
+                            {
+                                @if (i.IsEnded)
+                                {
+                                    <form method="get">
+                                        <button asp-action="DeleteAuction" name="AuctionId" value="@i.AuctionId" class="btn btn-danger" style="margin-top: 5px">Usuń aukcję</button>
+                                    </form>
+
+                                }
+                                else
+                                {
+                                    <form method="get">
+                                        <button asp-action="EndAuction" name="AuctionId" value="@i.AuctionId" class="btn btn-success" style="margin-top: 5px">Zakończ</button>
+                                    </form>
+
+                                }
 
 
-                        }
+                            }
+                        </div>
                     </div>
-                </div>
-            }
+                }
 
             }
             else
@@ -318,49 +336,49 @@
     </div>
     <div class="col-xs-12" style="text-align: center">
         @{ var numberOfElements = Model.NumberOfElements;
-        var numberOfPages = Model.NumberOfPages;
-        //if (numberOfElements % Model.OnPage != 0)
-        //{
-        //    numberOfPages += 1;
-        //}
-        var next = Model.Page + 1;
-        var prev = Model.Page - 1;
-        if (next > numberOfPages)
-        {
-            next = numberOfPages;
+            var numberOfPages = Model.NumberOfPages;
+            //if (numberOfElements % Model.OnPage != 0)
+            //{
+            //    numberOfPages += 1;
+            //}
+            var next = Model.Page + 1;
+            var prev = Model.Page - 1;
+            if (next > numberOfPages)
+            {
+                next = numberOfPages;
 
-        }
-        if (prev < 1)
-        {
-            prev = 1;
+            }
+            if (prev < 1)
+            {
+                prev = 1;
 
-        }
+            }
         }
 
         <ul class="pagination">
             <li><button class="btn btn-default" name="page" value="@prev" form="index-form">Poprzednia</button></li>
             <li><button class="btn btn-default" name="page" value="1" form="index-form">Pierwsza</button></li>
             @for (int i = 1; i <= numberOfPages; i++)
-        {
-            @if (i > Model.Page - 3 && i < Model.Page + 3)
-        {
-            @if (i <= Model.NumberOfPages)
-        {
+            {
+                @if (i > Model.Page - 3 && i < Model.Page + 3)
+                {
+                    @if (i <= Model.NumberOfPages)
+                    {
 
-            @if (i.Equals(Model.Page))
-        {
-            <li><button class="btn btn-primary" name="page" value="@i" form="index-form">@i</button></li>
+                        @if (i.Equals(Model.Page))
+                        {
+                            <li><button class="btn btn-primary" name="page" value="@i" form="index-form">@i</button></li>
 
-    }
-    else
-    {
-        <li><button class="btn btn-default" name="page" value="@i" form="index-form">@i</button></li>
-}
-    }
+                        }
+                        else
+                        {
+                            <li><button class="btn btn-default" name="page" value="@i" form="index-form">@i</button></li>
+                        }
+                    }
 
-    }
+                }
 
-    }
+            }
             <li><button class="btn btn-default" name="page" value="@numberOfPages" form="index-form">Ostatnia</button></li>
             <li><button class="btn btn-default" name="page" value="@next" form="index-form">Następna</button></li>
         </ul>

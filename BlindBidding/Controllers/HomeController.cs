@@ -57,7 +57,7 @@ namespace BlindBidding.Controllers
         }
 
         public async Task<IActionResult> Index(string filter="", int page=1, int onPage=10, 
-            string sortingOrder="Rosnąco", string sortingExpression="Data zakończenia", string category="Samochody osobowe", string message="")
+            string sortingOrder="Rosnąco", string sortingExpression="Data zakończenia", string category="RTV/AGD", string message="")
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 

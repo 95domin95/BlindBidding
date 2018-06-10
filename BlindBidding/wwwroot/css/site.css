@@ -82,3 +82,48 @@
     height: 0px;
     visibility: hidden;
 }
+
+#application-logo {
+    font-size: 200%;
+}
+
+@media only screen and (max-width: 400px) {
+    #application-logo {
+        font-size: 180%;
+    }
+}
+@media only screen and (max-width: 370px) {
+    #application-logo {
+        font-size: 160%;
+    }
+}
+@media only screen and (max-width: 345px) {
+    #application-logo {
+        font-size: 140%;
+    }
+}
+@media only screen and (max-width: 310px) {
+    #application-logo {
+        font-size: 120%;
+    }
+}
+@media only screen and (max-width: 285px) {
+    #application-logo {
+        font-size: 100%;
+    }
+}
+@media only screen and (max-width: 258px) {
+    #application-logo {
+        font-size: 80%;
+    }
+}
+@media only screen and (max-width: 225px) {
+    #application-logo {
+        font-size: 70%;
+    }
+}
+@media only screen and (max-width: 215px) {
+    #application-logo {
+        display: none;
+    }
+}
